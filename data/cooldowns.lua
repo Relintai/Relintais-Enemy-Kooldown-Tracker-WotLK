@@ -41,8 +41,34 @@ function Vect:AddCd(srcGUID, spellID)
 	local db =  Vect.db.profile;
 	if not db["enabled"] then return end;
 	
-	if not Vect.cds[srcGUID] then Vect.cds[srcGUID] = {} end
-	local cd, reset = Vect.spells[spellID][1], Vect.spells[spellID][2];
+	if not Vect.cds[srcGUID] then 
+		Vect.cds[srcGUID] = {}
+		Vect.cds[srcGUID]["spec"] = 1;
+	end
+	
+	local specchange = false;
+	if db["specdetection"] then
+		if Vect:DetectSpec(srcGUID, spellID) then
+			specchange = true;
+		end
+	end
+	
+	local spec = Vect.cds[srcGUID]["spec"];
+	local cd, reset = Vect.spells[spellID][spec], Vect.spells[spellID][2];
+	
+	if specchange and (not cd) then
+		if self.targets["target"] == srcGUID then
+			self:ReassignCds("target");
+		end
+		
+		if self.targets["focus"] == srcGUID then
+			self:ReassignCds("focus");
+		end
+	end
+	
+	--means spec detection spell
+	if not cd then return end;
+	
 	local spellName, spellRank, spellIcon = GetSpellInfo(spellID);
 	local currentTime = GetTime();
 	local endTime = currentTime + cd;
@@ -72,13 +98,36 @@ function Vect:AddCd(srcGUID, spellID)
 	end
 end
 
+function Vect:DetectSpec(srcGUID, spellID)
+	local spec = Vect.spells[spellID][6];
+	
+	if spec == 0 then return false end;
+	if Vect.cds[srcGUID]["spec"] == spec then return false end;
+	--self:Print("spec found: " .. spec);
+	Vect:RemapSpecCDs(srcGUID, spec);
+	return true;
+end
+
+function Vect:RemapSpecCDs(srcGUID, spec)
+	if not self.cds[srcGUID] then return end
+	for k, v in pairs(self.cds[srcGUID]) do
+		if not (k == "spec") then
+			local cd = Vect.spells[v[5]][spec];
+			v[3] = cd;
+			v[2] = v[1] + cd;
+		end
+	end
+end
+
 function Vect:CdRemoval(srcGUID, resetArray)
 	if not self.cds[srcGUID] then return end
 	for k, v in pairs(self.cds[srcGUID]) do
-		for j, x in pairs(resetArray) do
-			if v[5] == x then
-				--self:Print("Removed cd: " .. v[5]);
-				self.cds[srcGUID][v[5]] = nil;
+		if not (k == "spec") then
+			for j, x in pairs(resetArray) do
+				if v[5] == x then
+					--self:Print("Removed cd: " .. v[5]);
+					self.cds[srcGUID][v[5]] = nil;
+				end
 			end
 		end
 	end
@@ -91,17 +140,19 @@ function Vect:SortCDs(which)
 	--make the tmp table
 	local i = 1;
 	for k, v in pairs(self.cds[self.targets[which]]) do
-		tmp[i] = {
-			currentTime = v[1],
-			endTime = v[2],
-			cd = v[3],
-			spellIcon = v[4],
-			spellID = v[5]
-			};
-			
-		--self:Print(v[1] .. v[2] .. v[3] .. v[4] .. v[5])
-		--self:Print(tmp[i]["currentTime"] .. " " .. tmp[i]["endTime"] .. " " .. tmp[i]["cd"] .. " " .. tmp[i][4] .. " " .. tmp[i][5])
-		i = i + 1;
+		if not (k == "spec") then
+			tmp[i] = {
+				currentTime = v[1],
+				endTime = v[2],
+				cd = v[3],
+				spellIcon = v[4],
+				spellID = v[5]
+				};
+				
+			--self:Print(v[1] .. v[2] .. v[3] .. v[4] .. v[5])
+			--self:Print(tmp[i]["currentTime"] .. " " .. tmp[i]["endTime"] .. " " .. tmp[i]["cd"]);-- .. " " .. tmp[i][4] .. " " .. tmp[i][5])
+			i = i + 1;
+		end
 	end
 
 	if not tmp then return end;
@@ -185,12 +236,14 @@ function Vect:VOnTimerUpdate(which)
 	local t = GetTime();
 	--let's check if one of the cooldowns finished
 	for k, v in pairs(self.cds[self.targets[which]]) do
-		if v[2] <= t then
-			self.cds[self.targets[which]][v[5]] = nil;
-			--we have to update both, because if somebody is targeted and focused since sorting is 
-			--implemented it triggers only one update, probably it had bugs before too, but got unnoticed
-			self:ReassignCds("target");
-			self:ReassignCds("focus");
+		if not (k == "spec") then
+			if v[2] <= t then
+				self.cds[self.targets[which]][v[5]] = nil;
+				--we have to update both, because if somebody is targeted and focused since sorting is 
+				--implemented it triggers only one update, probably it had bugs before too, but got unnoticed
+				self:ReassignCds("target");
+				self:ReassignCds("focus");
+			end
 		end
 	end
 end

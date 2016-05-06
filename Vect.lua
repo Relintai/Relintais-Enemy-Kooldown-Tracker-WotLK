@@ -1,7 +1,14 @@
 
 --TODOS:
---spec detection
 --Way to show pet cds on the master -> currently looks impossible
+--dr cleanup (PLAYER ENTER WORLD)
+--Option to show pet cds on possible master (eg spell lock on all locks)
+--interrupts first option (or last or don't care), or better -> rank system v
+--3 option -> interrupt, stun, gap closers, strong nukes, the user can select which is first
+--mana gem, fap
+--support for rows
+
+--Message: ...nfig-3.0\AceConfigDialog-3.0\AceConfigDialog-3.0.lua:20: Cannot find a library instance of "AceGUI-3.0".
 
 --"Globals"
 local aceDB = LibStub("AceDB-3.0");
@@ -235,9 +242,11 @@ function Vect:PLAYER_ENTERING_WORLD()
 	local t = GetTime();
 	for k, v in pairs(Vect.cds) do
 		for i, j in pairs(v) do
-			if j[2] < t then
-				--self:Print(Vect.cds[k][i][4]);
-				Vect.cds[k][i] = nil;
+			if not (i == "spec") then
+				if j[2] < t then
+					--self:Print(Vect.cds[k][i][4]);
+					Vect.cds[k][i] = nil;
+				end
 			end
 		end
 	end
