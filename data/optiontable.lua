@@ -381,7 +381,7 @@ function Vect:getDebugOptions()
 			type = "toggle", name = "SpellCast", desc = "Enable/Disable writing out SPELL_CAST_SUCCESS events.", order = 50,
 			get = function() return Vect:getSpellCastDebug() end,
 			set = function(_, v)
-				2Vect:setSpellCastDebug(v);
+				Vect:setSpellCastDebug(v);
 			end
 		},
 		spellAura = {
