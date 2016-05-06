@@ -14,7 +14,8 @@ Vect.MovableFrames = nil
 
 Vect.targets = {
 	["target"] = nil,
-	["focus"] = nil
+	["focus"] = nil,
+	["self"] = nil
 }
 
 Vect.cds = {}
@@ -110,6 +111,7 @@ function Vect:OnEnable()
 	self:CreateDRFrames("focusdr");
 	self:CreateDRFrames("selfdr");
 	self:ApplySettings();
+	self.targets["self"] = UnitGUID("player");
 end
 
 
@@ -130,6 +132,11 @@ function Vect:ChatCommand(input)
 		LibStub("AceConfigCmd-3.0").HandleCommand(Vect, "vect", "Vect", input);
 	end
 end
+
+local COMBATLOG_OBJECT_TYPE_PLAYER = COMBATLOG_OBJECT_TYPE_PLAYER
+local COMBATLOG_OBJECT_REACTION_HOSTILE = COMBATLOG_OBJECT_REACTION_HOSTILE
+local COMBATLOG_OBJECT_CONTROL_PLAYER = COMBATLOG_OBJECT_CONTROL_PLAYER
+
 
 function Vect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcName, srcFlags, 
 					  dstGUID, dstName, dstFlags, spellID, spellName, spellSchool,
@@ -161,19 +168,59 @@ function Vect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 		if Vect.spells[spellID] then
 			Vect:AddCd(srcGUID, spellID);
 		end
-   end
+	end
+
+	--DR stuff
+	if( eventType == "SPELL_AURA_APPLIED" ) then
+		if(detail1 == "DEBUFF" and libDRData:GetSpellCategory(spellID)) then
+			local isPlayer = (bit.band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) == COMBATLOG_OBJECT_TYPE_PLAYER or bit.band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) == COMBATLOG_OBJECT_CONTROL_PLAYER)
+			
+			if (not isPlayer and not libDRData:IsPVE(drCat)) then
+				return
+			end
+			
+			local drCat = libDRData:GetSpellCategory(spellID);
+			Vect:DRDebuffGained(spellID, dstGUID, isPlayer);
+		end
+	
+	-- Enemy had a debuff refreshed before it faded, so fade + gain it quickly
+	elseif(eventType == "SPELL_AURA_REFRESH" ) then
+		if(detail1 == "DEBUFF" and libDRData:GetSpellCategory(spellID)) then
+			local isPlayer = (bit.band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) == COMBATLOG_OBJECT_TYPE_PLAYER or bit.band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) == COMBATLOG_OBJECT_CONTROL_PLAYER)
+			
+			if (not isPlayer and not libDRData:IsPVE(drCat)) then
+				return
+			end
+			
+			Vect:DRDebuffFaded(spellID, dstGUID, isPlayer);
+			Vect:DRDebuffGained(spellID, dstGUID, isPlayer);
+		end
+	
+	-- Buff or debuff faded from an enemy
+	elseif(eventType == "SPELL_AURA_REMOVED" ) then
+		if(detail1 == "DEBUFF" and libDRData:GetSpellCategory(spellID)) then
+			local isPlayer = (bit.band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) == COMBATLOG_OBJECT_TYPE_PLAYER or bit.band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) == COMBATLOG_OBJECT_CONTROL_PLAYER)
+			
+			if (not isPlayer and not libDRData:IsPVE(drCat)) then
+				return
+			end
+			Vect:DRDebuffFaded(spellID, dstGUID, isPlayer);
+		end
+	end
 end
 
 function Vect:PLAYER_TARGET_CHANGED()
 	local unitGUID = UnitGUID("target");
 	self.targets["target"] = unitGUID;
 	self:ReassignCds("target");
+	self:ReassignDRs("targetdr");
 end
 
 function Vect:PLAYER_FOCUS_CHANGED()
 	local unitGUID = UnitGUID("focus");
 	self.targets["focus"] = unitGUID;
 	self:ReassignCds("focus");
+	self:ReassignDRs("focusdr");
 end
 
 function Vect:PLAYER_ENTERING_WORLD()
@@ -194,6 +241,113 @@ function Vect:ZONE_CHANGED_NEW_AREA()
 	-- If we are entering an arena
 	if (type == "arena") then
 		self:Reset();
+	end
+end
+
+--DR db functions
+function Vect:DRDebuffGained(spellID, dstGUID, isPlayer)
+	local db =  Vect.db.profile;
+	if not db["enabled"] then return end;
+
+	if not Vect.drs[dstGUID] then
+		 Vect.drs[dstGUID] = {}
+	end
+
+	local drCat = libDRData:GetSpellCategory(spellID);
+	local spellName, spellRank, spellIcon = GetSpellInfo(spellID);
+
+	if not Vect.drs[dstGUID][drCat] then
+		local cd = 18;
+		local currentTime = GetTime();
+		local endTime = currentTime + cd;
+		local diminished = 1;
+		local isDiminishingStarted = false;
+		Vect.drs[dstGUID][drCat] = {
+			currentTime,
+			endTime,
+			cd,
+			spellIcon,
+			spellID,
+			diminished,
+			isDiminishingStarted,
+			drCat
+		}
+	else
+		local cd = 18;
+		local currentTime = GetTime();
+		local endTime = currentTime + cd;
+		Vect.drs[dstGUID][drCat][1] = currentTime;
+		Vect.drs[dstGUID][drCat][2] = currentTime + cd;
+		Vect.drs[dstGUID][drCat][4] = spellIcon;
+		Vect.drs[dstGUID][drCat][5] = spellID;
+		Vect.drs[dstGUID][drCat][6] = Vect.drs[dstGUID][drCat][6] + 1;
+		Vect.drs[dstGUID][drCat][7] = false;
+	end
+	
+	--self:Print(Vect.cds[srcGUID][spellID][1] .. " " .. Vect.cds[srcGUID][spellID][2] .. " " .. Vect.cds[srcGUID][spellID][3]);
+	
+	if self.targets["target"] == dstGUID then
+		self:ReassignDRs("targetdr");
+	end
+	
+	if self.targets["focus"] == dstGUID then
+		self:ReassignDRs("focusdr");
+	end
+	
+	if self.targets["self"] == dstGUID then
+		self:ReassignDRs("selfdr");
+	end
+end
+
+function Vect:DRDebuffFaded(spellID, dstGUID, isPlayer)
+	local db =  Vect.db.profile;
+	--if not db["enabled"] then return end;
+
+	if not Vect.drs[dstGUID] then 
+		 Vect.drs[dstGUID] = {}
+	end
+
+	local drCat = libDRData:GetSpellCategory(spellID);
+	local spellName, spellRank, spellIcon = GetSpellInfo(spellID);
+
+	if not Vect.drs[dstGUID][drCat] then
+		--means we didn't see it applied
+		local cd = 18;
+		local currentTime = GetTime();
+		local endTime = currentTime + cd;
+		local diminished = 1;
+		local isDiminishingStarted = true;
+		Vect.drs[dstGUID][drCat] = {
+			currentTime,
+			endTime,
+			cd,
+			spellIcon,
+			spellID,
+			diminished,
+			isDiminishingStarted,
+			drCat
+		}
+	else
+		local cd = 18;
+		local currentTime = GetTime();
+		local endTime = currentTime + cd;
+		Vect.drs[dstGUID][drCat][1] = currentTime;
+		Vect.drs[dstGUID][drCat][2] = endTime;
+		Vect.drs[dstGUID][drCat][7] = true;
+	end
+
+	--self:Print(Vect.cds[srcGUID][spellID][1] .. " " .. Vect.cds[srcGUID][spellID][2] .. " " .. Vect.cds[srcGUID][spellID][3]);
+	
+	if self.targets["target"] == dstGUID then
+		self:ReassignDRs("targetdr");
+	end
+	
+	if self.targets["focus"] == dstGUID then
+		self:ReassignDRs("focusdr");
+	end
+	
+	if self.targets["self"] == dstGUID then
+		self:ReassignDRs("selfdr");
 	end
 end
 
@@ -223,6 +377,48 @@ function Vect:ReassignCds(which)
 		text:SetTexture(v["spellIcon"]);
 		local CoolDown = Vect.frames[which][i]["cooldown"];
 		CoolDown:SetCooldown(v["currentTime"], v["cd"]);
+		frame:Show();
+		i = i + 1;
+	end
+end
+
+function Vect:ReassignDRs(which)
+	local db =  Vect.db.profile;
+	--bail out early, if frames are disabled
+	--if not db[which]["enabled"] or not db["enabled"] then return end;
+	--first hide all
+	for i = 1, 18 do
+		local frame = Vect.frames[which][i]["frame"];
+		frame:Hide();
+	end
+	--check if frames are unlocked
+	if not db["locked"] then return end;
+	--check if we have cooldown for that unit
+	local whichs = "";
+	if which == "targetdr" then
+		whichs = "target";
+	elseif which == "focusdr" then
+		whichs = "focus";
+	else
+		whichs = "self";
+	end
+
+	if not self.drs[self.targets[whichs]] then return end;
+	--sort them
+	local tmp = Vect:SortDRs(whichs);
+	--let's fill them up
+	local i = 1;
+	for k, v in ipairs(tmp) do
+		--self:Print(v["spellID"]);
+		local frame = Vect.frames[which][i]["frame"];
+		local text = Vect.frames[which][i]["texture"];
+		text:SetTexture(v["spellIcon"]);
+		local CoolDown = Vect.frames[which][i]["cooldown"];
+		if v["isDiminishingStarted"] then
+			CoolDown:SetCooldown(v["currentTime"], v["cd"]);
+		else
+			CoolDown:SetCooldown(v["currentTime"], 0);
+		end
 		frame:Show();
 		i = i + 1;
 	end
@@ -314,6 +510,49 @@ function Vect:SortCDs(which)
 	return tmp;
 end
 
+function Vect:SortDRs(which)
+	local db = Vect.db.profile;
+	local tmp = {};
+
+	--make the tmp table
+	local i = 1;
+	for k, v in pairs(self.drs[self.targets[which]]) do
+		tmp[i] = {
+			currentTime = v[1],
+			endTime = v[2],
+			cd = v[3],
+			spellIcon = v[4],
+			spellID = v[5],
+			diminished = v[6],
+			isDiminishingStarted = v[7]
+			};
+			
+		--self:Print(v[1] .. v[2] .. v[3] .. v[4] .. v[5])
+		--self:Print(tmp[i]["currentTime"] .. " " .. tmp[i]["endTime"] .. " " .. tmp[i]["cd"] .. " " .. tmp[i][4] .. " " .. tmp[i][5])
+		i = i + 1;
+	end
+
+	if not tmp then return end;
+	
+	if which == "self" then which = "selfdr" end
+	
+	if db[which]["sortOrder"] == "1" then --["1"] = "Ascending (CD left)",
+		table.sort(tmp, function(a, b) return Vect:ComparerAscendingCDLeft(a, b) end);
+	elseif db[which]["sortOrder"] == "2" then --["2"] = "Descending (CD left)",
+		table.sort(tmp, function(a, b) return Vect:ComparerDescendingCDLeft(a, b) end);
+	elseif db[which]["sortOrder"] == "3" then --["3"] = "Ascending (CD total)",
+		table.sort(tmp, function(a, b) return Vect:ComparerAscendingCDTotal(a, b) end);
+	elseif db[which]["sortOrder"] == "4" then --["4"] = "Descending (CD total)",
+		table.sort(tmp, function(a, b) return Vect:ComparerDescendingCDTotal(a, b) end);
+	elseif db[which]["sortOrder"] == "5" then --["5"] = "Recent first",
+		table.sort(tmp, function(a, b) return Vect:ComparerRecentFirst(a, b) end);
+	elseif db[which]["sortOrder"] == "6" then --["6"] = "Recent Last",
+		table.sort(tmp, function(a, b) return Vect:ComparerRecentLast(a, b) end);
+	end
+	--["7"] = "No order"
+	return tmp;
+end
+
 function Vect:CreateFrames(which)
 	for i = 1, 23 do
 		local frame = CreateFrame("Frame", nil, UIParent, nil);
@@ -344,8 +583,18 @@ function Vect:CreateDRFrames(which)
 		frame:SetFrameStrata("MEDIUM");
 		frame:SetWidth(150);
 		frame:SetHeight(150);
+		
+		local wh = "";
+		if which == "targetdr" then
+			wh = "target";
+		elseif which == "focusdr" then
+			wh = "focus";
+		else
+			wh = "self";
+		end
+		
 		if i == 1 then
-			frame:SetScript("OnUpdate", function() self:VOnDRTimerUpdate(which) end)
+			frame:SetScript("OnUpdate", function() self:VOnDRTimerUpdate(wh) end)
 		end
 		local text = frame:CreateTexture();
 		text:SetTexture("Interface\\Icons\\Spell_Arcane_Blink")
@@ -437,6 +686,12 @@ function Vect:ApplySettings()
 	Vect:MoveTimersStop("focus");
 	Vect:ReassignCds("target");
 	Vect:ReassignCds("focus");
+	Vect:MoveDRTimersStop("targetdr");
+	Vect:MoveDRTimersStop("focusdr");
+	Vect:MoveDRTimersStop("selfdr");
+	Vect:ReassignDRs("targetdr");
+	Vect:ReassignDRs("focusdr");
+	Vect:ReassignDRs("selfdr");
 	if not db["locked"] then self:ShowMovableFrames() end;
 end
 
@@ -457,7 +712,20 @@ function Vect:VOnTimerUpdate(which)
 end
 
 function Vect:VOnDRTimerUpdate(which)
-	--TODO
+	--check if we have dr for that unit
+	if not self.drs[self.targets[which]] then return end
+	local t = GetTime();
+	--let's check if one of the cooldowns finished
+	for k, v in pairs(self.drs[self.targets[which]]) do
+		if v[7] == true and v[2] <= t then
+			self.drs[self.targets[which]][v[8]] = nil;
+			--we have to update every three, because if somebody is targeted and focused since sorting is 
+			--implemented it triggers only one update, probably it had bugs before too, but got unnoticed
+			self:ReassignDRs("targetdr");
+			self:ReassignDRs("focusdr");
+			self:ReassignDRs("selfdr");
+		end
+	end
 end
 
 function Vect:VectDisable()
@@ -676,6 +944,12 @@ function Vect:setGrowOrder(which, v)
 	local db = Vect.db.profile;
 	db[which]["growOrder"] = v;
 	Vect:MoveTimersStop(which)
+end
+
+function Vect:setDRGrowOrder(which, v)
+	local db = Vect.db.profile;
+	db[which]["growOrder"] = v;
+	Vect:MoveDRTimersStop(which)
 end
 
 --Sort Order

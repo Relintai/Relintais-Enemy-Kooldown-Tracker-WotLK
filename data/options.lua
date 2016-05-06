@@ -178,7 +178,7 @@ function Vect:getDROptions()
 			},
 			get = function() return Vect:getGrowOrder("targetdr") end,
 			set = function(_, v)
-				Vect:setGrowOrder("targetdr", v);
+				Vect:setDRGrowOrder("targetdr", v);
 			end
 		},
 		targetdrSortSelect = {
@@ -226,7 +226,7 @@ function Vect:getDROptions()
 			},
 			get = function() return Vect:getGrowOrder("focusdr") end,
 			set = function(_, v)
-				Vect:setGrowOrder("focusdr", v);
+				Vect:setDRGrowOrder("focusdr", v);
 			end
 		},
 		focusdrSortSelect = {
@@ -278,7 +278,7 @@ function Vect:getSelfDROptions()
 			},
 			get = function() return Vect:getGrowOrder("selfdr") end,
 			set = function(_, v)
-				Vect:setGrowOrder("selfdr", v);
+				Vect:setDRGrowOrder("selfdr", v);
 			end
 		},
 		selfdrSortSelect = {
