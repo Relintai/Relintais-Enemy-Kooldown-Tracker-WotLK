@@ -1,10 +1,10 @@
 
-Vect = LibStub("AceAddon-3.0"):NewAddon("Vect", "AceConsole-3.0", "AceEvent-3.0")
-Vect.appName = "Vect"
-Vect.dbName = "VectDB"
-Vect.version = "1.0RC1"
+Rect = LibStub("AceAddon-3.0"):NewAddon("Rect", "AceConsole-3.0", "AceEvent-3.0")
+Rect.appName = "Rect"
+Rect.dbName = "RectDB"
+Rect.version = "1.0RC1"
 
-function Vect:HideFrames()
+function Rect:HideFrames()
 	for i = 1, 23 do
 		local frame = self.frames["target"][i]["frame"];
 		frame:Hide();

@@ -6,18 +6,18 @@ local aceConfig = LibStub("AceConfig-3.0");
 local libSharedMedia = LibStub("LibSharedMedia-3.0");
 local libDRData = LibStub('DRData-1.0');
 
-Vect.MovableFrames = nil
+Rect.MovableFrames = nil
 
-Vect.targets = {
+Rect.targets = {
 	["target"] = nil,
 	["focus"] = nil,
 	["self"] = nil
 }
 
-Vect.cds = {}
-Vect.drs = {}
+Rect.cds = {}
+Rect.drs = {}
 
-Vect.frames = {
+Rect.frames = {
 	["target"] = {},
 	["focus"] = {},
 	["targetdr"] = {},
@@ -25,7 +25,7 @@ Vect.frames = {
 	["selfdr"] = {}
 }
 
-Vect.defaults = {
+Rect.defaults = {
    profile = {
 		enabled = true,
 		locked = true,
@@ -178,25 +178,25 @@ Vect.defaults = {
    }
 }
 
-function Vect:Reset()
-   Vect.cds = {}
-   Vect.drs = {}
-   Vect.target = {unitGUID = -1, timers = {}}
-   Vect.focus = {unitGUID = -1, timers = {}}
-   Vect:HideSelfDRFrames();
+function Rect:Reset()
+   Rect.cds = {}
+   Rect.drs = {}
+   Rect.target = {unitGUID = -1, timers = {}}
+   Rect.focus = {unitGUID = -1, timers = {}}
+   Rect:HideSelfDRFrames();
 end
    
-function Vect:OnInitialize()
-	self.db = aceDB:New("VectDB", self.defaults);
+function Rect:OnInitialize()
+	self.db = aceDB:New("RectDB", self.defaults);
 	self.db.RegisterCallback(self, "OnProfileChanged", function() self:ApplySettings() end);
 	self.db.RegisterCallback(self, "OnProfileCopied", function() self:ApplySettings() end);
 	self.db.RegisterCallback(self, "OnProfileReset", function() self:ApplySettings() end);
-	aceConfig:RegisterOptionsTable("Vect", self:GetVectOptions());
-	aceCDialog:AddToBlizOptions("Vect");
-	self:RegisterChatCommand("vect", "ChatCommand");
+	aceConfig:RegisterOptionsTable("Rect", self:GetRectOptions());
+	aceCDialog:AddToBlizOptions("Rect");
+	self:RegisterChatCommand("Rect", "ChatCommand");
 end
 
-function Vect:OnEnable()
+function Rect:OnEnable()
 	self:Reset()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
@@ -213,7 +213,7 @@ function Vect:OnEnable()
 end
 
 
-function Vect:OnDisable()
+function Rect:OnDisable()
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	self:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
 	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -223,11 +223,11 @@ function Vect:OnDisable()
 end
 
 
-function Vect:ChatCommand(input)
+function Rect:ChatCommand(input)
 	if not input or input:trim() == "" then
-		aceCDialog:Open("Vect");
+		aceCDialog:Open("Rect");
 	else
-		LibStub("AceConfigCmd-3.0").HandleCommand(Vect, "vect", "Vect", input);
+		LibStub("AceConfigCmd-3.0").HandleCommand(Rect, "Rect", "Rect", input);
 	end
 end
 
@@ -236,10 +236,10 @@ local COMBATLOG_OBJECT_REACTION_HOSTILE = COMBATLOG_OBJECT_REACTION_HOSTILE
 local COMBATLOG_OBJECT_CONTROL_PLAYER = COMBATLOG_OBJECT_CONTROL_PLAYER
 
 
-function Vect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcName, srcFlags, 
+function Rect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcName, srcFlags, 
 					  dstGUID, dstName, dstFlags, spellID, spellName, spellSchool,
 					  detail1, detail2, detail3)
-	local db =  Vect.db.profile;
+	local db =  Rect.db.profile;
 
 	if not db["enabled"] then return end;
 	
@@ -263,8 +263,8 @@ function Vect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 			self:Print("id: " .. spellID .. " spellName: " .. spellName);
 		end
 	  
-		if Vect.spells[spellID] then
-			Vect:AddCd(srcGUID, spellID);
+		if Rect.spells[spellID] then
+			Rect:AddCd(srcGUID, spellID);
 		end
 	end
 
@@ -278,7 +278,7 @@ function Vect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 			end
 			
 			local drCat = libDRData:GetSpellCategory(spellID);
-			Vect:DRDebuffGained(spellID, dstGUID, isPlayer);
+			Rect:DRDebuffGained(spellID, dstGUID, isPlayer);
 		end
 	
 	-- Enemy had a debuff refreshed before it faded, so fade + gain it quickly
@@ -290,8 +290,8 @@ function Vect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 				return
 			end
 			
-			Vect:DRDebuffFaded(spellID, dstGUID, isPlayer);
-			Vect:DRDebuffGained(spellID, dstGUID, isPlayer);
+			Rect:DRDebuffFaded(spellID, dstGUID, isPlayer);
+			Rect:DRDebuffGained(spellID, dstGUID, isPlayer);
 		end
 	
 	-- Buff or debuff faded from an enemy
@@ -303,42 +303,42 @@ function Vect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 				return
 			end
 			
-			Vect:DRDebuffFaded(spellID, dstGUID, isPlayer);
+			Rect:DRDebuffFaded(spellID, dstGUID, isPlayer);
 		end
 	end
 end
 
-function Vect:PLAYER_TARGET_CHANGED()
+function Rect:PLAYER_TARGET_CHANGED()
 	local unitGUID = UnitGUID("target");
 	self.targets["target"] = unitGUID;
 	self:ReassignCds("target");
 	self:ReassignDRs("targetdr");
 end
 
-function Vect:PLAYER_FOCUS_CHANGED()
+function Rect:PLAYER_FOCUS_CHANGED()
 	local unitGUID = UnitGUID("focus");
 	self.targets["focus"] = unitGUID;
 	self:ReassignCds("focus");
 	self:ReassignDRs("focusdr");
 end
 
-function Vect:PLAYER_ENTERING_WORLD()
+function Rect:PLAYER_ENTERING_WORLD()
 	--DB cleanup
 	local t = GetTime();
-	for k, v in pairs(Vect.cds) do
+	for k, v in pairs(Rect.cds) do
 		for i, j in pairs(v) do
 			if not (i == "spec") then
 				if j[2] < t then
-					--self:Print(Vect.cds[k][i][4]);
-					Vect.cds[k][i] = nil;
+					--self:Print(Rect.cds[k][i][4]);
+					Rect.cds[k][i] = nil;
 				end
 			end
 		end
 	end
-	Vect.drs = {}
+	Rect.drs = {}
 end
 
-function Vect:ZONE_CHANGED_NEW_AREA()
+function Rect:ZONE_CHANGED_NEW_AREA()
 	local type = select(2, IsInInstance())
 	-- If we are entering an arena
 	if (type == "arena") then
@@ -346,17 +346,17 @@ function Vect:ZONE_CHANGED_NEW_AREA()
 	end
 end
 
-function Vect:ApplySettings()
-	local db = Vect.db.profile;
-	Vect:MoveTimersStop("target");
-	Vect:MoveTimersStop("focus");
-	Vect:ReassignCds("target");
-	Vect:ReassignCds("focus");
-	Vect:MoveDRTimersStop("targetdr");
-	Vect:MoveDRTimersStop("focusdr");
-	Vect:MoveDRTimersStop("selfdr");
-	Vect:ReassignDRs("targetdr");
-	Vect:ReassignDRs("focusdr");
-	Vect:ReassignDRs("selfdr");
+function Rect:ApplySettings()
+	local db = Rect.db.profile;
+	Rect:MoveTimersStop("target");
+	Rect:MoveTimersStop("focus");
+	Rect:ReassignCds("target");
+	Rect:ReassignCds("focus");
+	Rect:MoveDRTimersStop("targetdr");
+	Rect:MoveDRTimersStop("focusdr");
+	Rect:MoveDRTimersStop("selfdr");
+	Rect:ReassignDRs("targetdr");
+	Rect:ReassignDRs("focusdr");
+	Rect:ReassignDRs("selfdr");
 	if not db["locked"] then self:ShowMovableFrames() end;
 end

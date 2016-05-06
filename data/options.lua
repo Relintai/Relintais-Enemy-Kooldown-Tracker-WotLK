@@ -8,15 +8,15 @@ local libDRData = LibStub('DRData-1.0');
 
 --Utility Functions for the options
 
-function Vect:VectDisable()
+function Rect:RectDisable()
 	self:Reset();
 	self:ApplySettings();
 	--hide the frames
-	Vect:HideFrames();
+	Rect:HideFrames();
 	--self:Disable();
 end
 
-function Vect:VectEnable()
+function Rect:RectEnable()
 	--self:Enable();
 	self:Reset();
 	self:ApplySettings();
@@ -24,35 +24,35 @@ end
 
 
 --enable
-function Vect:isEnabled()
-	local db = Vect.db.profile;
+function Rect:isEnabled()
+	local db = Rect.db.profile;
 	return db["enabled"];
 end
 
-function Vect:setEnabledOrDisabled(enable)
-	local db = Vect.db.profile;
+function Rect:setEnabledOrDisabled(enable)
+	local db = Rect.db.profile;
 	db["enabled"] = enable;
 	if enable then
-		Vect:VectEnable()
+		Rect:RectEnable()
 	else 
-		Vect:VectDisable() 
+		Rect:RectDisable() 
 	end
 end
 
-function Vect:isPartEnabled(which)
-	local db = Vect.db.profile;
+function Rect:isPartEnabled(which)
+	local db = Rect.db.profile;
 	return db[which]["enabled"];
 end
 
-function Vect:SetPartEnabledOrDisabled(which, enable)
-	local db = Vect.db.profile;
+function Rect:SetPartEnabledOrDisabled(which, enable)
+	local db = Rect.db.profile;
 	db[which]["enabled"] = enable;
 	--hide all those frames
 	if not enable then
 		for i = 1, 23 do
-			local frame = Vect.frames[which][i]["frame"];
+			local frame = Rect.frames[which][i]["frame"];
 			frame:Hide();
-			local colorframe = Vect.fremes[which][i]["colorframe"];
+			local colorframe = Rect.fremes[which][i]["colorframe"];
 			colorframe:Hide();
 		end
 	else
@@ -60,13 +60,13 @@ function Vect:SetPartEnabledOrDisabled(which, enable)
 	end
 end
 
-function Vect:SetDRPartEnabledOrDisabled(which, enable)
-	local db = Vect.db.profile;
+function Rect:SetDRPartEnabledOrDisabled(which, enable)
+	local db = Rect.db.profile;
 	db[which]["enabled"] = enable;
 	--hide all those frames
 	if not enable then
 		for i = 1, 18 do
-			local frame = Vect.frames[which][i]["frame"];
+			local frame = Rect.frames[which][i]["frame"];
 			frame:Hide();
 		end
 	else
@@ -74,30 +74,30 @@ function Vect:SetDRPartEnabledOrDisabled(which, enable)
 	end
 end
 
-function Vect:isSpecDetectionEnabled()
-	local db = Vect.db.profile;
+function Rect:isSpecDetectionEnabled()
+	local db = Rect.db.profile;
 	return db["specdetection"];
 end
 
-function Vect:setSpecDetectionEnabledorDisabled(enable)
-	local db = Vect.db.profile;
+function Rect:setSpecDetectionEnabledorDisabled(enable)
+	local db = Rect.db.profile;
 	db["specdetection"] = enable;
 	--call the remapcooldowns, and then update
 	--self:ReassignCds(which);
 end
 
-function Vect:getColorFrameEnabled(which)
-	local db = Vect.db.profile;
+function Rect:getColorFrameEnabled(which)
+	local db = Rect.db.profile;
 	return db[which]["colorframeenabled"];
 end
 
-function Vect:setColorFrameEnabled(which, enable)
-	local db = Vect.db.profile;
+function Rect:setColorFrameEnabled(which, enable)
+	local db = Rect.db.profile;
 	db[which]["colorframeenabled"] = enable;
 	--hide all those frames
 	if not enable then
 		for i = 1, 23 do
-			local colorframe = Vect.frames[which][i]["colorframe"];
+			local colorframe = Rect.frames[which][i]["colorframe"];
 			colorframe:Hide();
 		end
 	else
@@ -105,35 +105,35 @@ function Vect:setColorFrameEnabled(which, enable)
 	end
 end
 
-function Vect:getCDTypeSortingEnable()
-	local db = Vect.db.profile;
+function Rect:getCDTypeSortingEnable()
+	local db = Rect.db.profile;
 	return db["cdtypesortorder"]["enabled"];
 end
 
-function Vect:setCDTypeSortingEnable(v)
-	local db = Vect.db.profile;
+function Rect:setCDTypeSortingEnable(v)
+	local db = Rect.db.profile;
 	db["cdtypesortorder"]["enabled"] = v;
 	
 	self:ReassignCds("target");
 	self:ReassignCds("focus");
 end
 
-function Vect:getPetCDGuessing()
-	local db = Vect.db.profile;
+function Rect:getPetCDGuessing()
+	local db = Rect.db.profile;
 	return db["petcdguessing"];
 end
 
-function Vect:setPetCDGuessing(v)
-	local db = Vect.db.profile;
+function Rect:setPetCDGuessing(v)
+	local db = Rect.db.profile;
 	db["petcdguessing"] = v;
 end
 
 --lock
-function Vect:isLocked()
-	return Vect.db.profile["locked"];
+function Rect:isLocked()
+	return Rect.db.profile["locked"];
 end
 
-function Vect:LockFrames()
+function Rect:LockFrames()
 	self:MoveTimersStop("target");
 	self:MoveTimersStop("focus");
 	self:HideMovableFrames()
@@ -141,28 +141,28 @@ function Vect:LockFrames()
 	self:ReassignCds("focus");
 end
 
-function Vect:UnlockFrames()
+function Rect:UnlockFrames()
 	--this will hide the frames
 	self:ReassignCds("target");
 	self:ReassignCds("focus");
-	Vect:ShowMovableFrames();
+	Rect:ShowMovableFrames();
 end
 
-function Vect:HideMovableFrames()
-	if not Vect.MovableFrames then return end;
+function Rect:HideMovableFrames()
+	if not Rect.MovableFrames then return end;
 	--Hide them
-	for k, v in pairs(Vect.MovableFrames) do
+	for k, v in pairs(Rect.MovableFrames) do
 		v["frame"]:EnableMouse(false);
 		v["frame"]:SetMovable(false);
 		v["frame"]:Hide();
 	end
 end
 
-function Vect:ShowMovableFrames()
-	local db = Vect.db.profile;
+function Rect:ShowMovableFrames()
+	local db = Rect.db.profile;
 	--Create them if they doesn't exists
-	if not Vect.MovableFrames then
-		Vect.MovableFrames = {}
+	if not Rect.MovableFrames then
+		Rect.MovableFrames = {}
 		for i = 1, 5 do
 			local frame = CreateFrame("Frame", nil, UIParent, nil);
 			frame:SetFrameStrata("BACKGROUND");
@@ -207,15 +207,15 @@ function Vect:ShowMovableFrames()
 			
 			frame.DragID = which;
 			
-			Vect.MovableFrames[i] = {}
-			Vect.MovableFrames[i]["frame"] = frame;
-			Vect.MovableFrames[i]["texture"] = text;
-			Vect.MovableFrames[i]["text"] = t;
+			Rect.MovableFrames[i] = {}
+			Rect.MovableFrames[i]["frame"] = frame;
+			Rect.MovableFrames[i]["texture"] = text;
+			Rect.MovableFrames[i]["text"] = t;
 		end
 	end
 
 	--Show, resize them
-	for k, v in pairs(Vect.MovableFrames) do
+	for k, v in pairs(Rect.MovableFrames) do
 		v["frame"]:EnableMouse(true)
 		v["frame"]:SetMovable(true)
 		v["frame"]:RegisterForDrag("LeftButton")
@@ -226,121 +226,121 @@ function Vect:ShowMovableFrames()
 	end
 end
 
-function Vect:MovableFrameDragStart()
+function Rect:MovableFrameDragStart()
 	this:StartMoving();
 end
 
-function Vect:MovableFrameDragStop()
-	local db = Vect.db.profile;
+function Rect:MovableFrameDragStop()
+	local db = Rect.db.profile;
 	db[this.DragID]["xPos"] = this:GetLeft();
 	db[this.DragID]["yPos"] = this:GetBottom();
-	--Vect:Print(this:GetLeft() .. " " .. this:GetBottom());
+	--Rect:Print(this:GetLeft() .. " " .. this:GetBottom());
 	this:StopMovingOrSizing();
 end
 
 --size Functions
 
-function Vect:getFrameSize(which)
-	local db = Vect.db.profile;
+function Rect:getFrameSize(which)
+	local db = Rect.db.profile;
 	return db[which]["size"];
 end
 
-function Vect:setFrameSize(which, size)
-	local db = Vect.db.profile;
+function Rect:setFrameSize(which, size)
+	local db = Rect.db.profile;
 	db[which]["size"] = size;
 	
-	Vect:MoveTimersStop(which)
+	Rect:MoveTimersStop(which)
 	
 	if not db["locked"] then
-		Vect:ShowMovableFrames();
+		Rect:ShowMovableFrames();
 	end
 end
 
-function Vect:getDRNumSize(which)
-	local db = Vect.db.profile;
+function Rect:getDRNumSize(which)
+	local db = Rect.db.profile;
 	return db[which]["drnumsize"];
 end
 
-function Vect:setDRNumSize(which, size)
-	local db = Vect.db.profile;
+function Rect:setDRNumSize(which, size)
+	local db = Rect.db.profile;
 	db[which]["size"] = size;
-	Vect:MoveDRTimersStop(which)
+	Rect:MoveDRTimersStop(which)
 end
 
-function Vect:getColorFrameSize(which)
-	local db = Vect.db.profile;
+function Rect:getColorFrameSize(which)
+	local db = Rect.db.profile;
 	return db[which]["colorframesize"];
 end
 
-function Vect:setColorFrameSize(which, size)
-	local db = Vect.db.profile;
+function Rect:setColorFrameSize(which, size)
+	local db = Rect.db.profile;
 	db[which]["colorframesize"] = size;
 	
-	Vect:MoveTimersStop(which);
-	Vect:ReassignCds(which);
+	Rect:MoveTimersStop(which);
+	Rect:ReassignCds(which);
 	
 	if not db["locked"] then
-		Vect:ShowMovableFrames();
+		Rect:ShowMovableFrames();
 	end
 end
 
 --Grow Order
-function Vect:getGrowOrder(which)
-	local db = Vect.db.profile;
+function Rect:getGrowOrder(which)
+	local db = Rect.db.profile;
 	return db[which]["growOrder"];
 end
 
-function Vect:setGrowOrder(which, v)
-	local db = Vect.db.profile;
+function Rect:setGrowOrder(which, v)
+	local db = Rect.db.profile;
 	db[which]["growOrder"] = v;
-	Vect:MoveTimersStop(which)
+	Rect:MoveTimersStop(which)
 end
 
-function Vect:setDRGrowOrder(which, v)
-	local db = Vect.db.profile;
+function Rect:setDRGrowOrder(which, v)
+	local db = Rect.db.profile;
 	db[which]["growOrder"] = v;
-	Vect:MoveDRTimersStop(which)
+	Rect:MoveDRTimersStop(which)
 end
 
 --Sort Order
-function Vect:getSortOrder(which)
-	local db = Vect.db.profile;
+function Rect:getSortOrder(which)
+	local db = Rect.db.profile;
 	return db[which]["sortOrder"];
 end
 
-function Vect:setSortOrder(which, v)
-	local db = Vect.db.profile;
+function Rect:setSortOrder(which, v)
+	local db = Rect.db.profile;
 	db[which]["sortOrder"] = v;
-	Vect:ReassignCds(which);
+	Rect:ReassignCds(which);
 end
 
-function Vect:getTypeSortOrder(which)
-	local db = Vect.db.profile;
+function Rect:getTypeSortOrder(which)
+	local db = Rect.db.profile;
 	return db["cdtypesortorder"][which];
 end
 
-function Vect:setTypeSortOrder(which, v)
-	local db = Vect.db.profile;
+function Rect:setTypeSortOrder(which, v)
+	local db = Rect.db.profile;
 	db["cdtypesortorder"][which] = v;
-	Vect:ReassignCds("target");
-	Vect:ReassignCds("focus");
+	Rect:ReassignCds("target");
+	Rect:ReassignCds("focus");
 end
 
 --Num Position functions
-function Vect:getDRNumPosition(which)
-	local db = Vect.db.profile;
+function Rect:getDRNumPosition(which)
+	local db = Rect.db.profile;
 	return db[which]["drnumposition"];
 end
 
-function Vect:setDRNumPosition(which, v)
-	local db = Vect.db.profile;
+function Rect:setDRNumPosition(which, v)
+	local db = Rect.db.profile;
 	db[which]["drnumposition"] = v;
-	Vect:MoveDRTimersStop(which);
+	Rect:MoveDRTimersStop(which);
 end
 
 --Color options
-function Vect:getColor(part)
-	local db = Vect.db.profile;
+function Rect:getColor(part)
+	local db = Rect.db.profile;
 	
 	if not db["color"] then db["color"] = {} end
 	
@@ -355,8 +355,8 @@ function Vect:getColor(part)
 	return db["color"][part]["r"], db["color"][part]["g"], db["color"][part]["b"], db["color"][part]["a"];
 end
 
-function Vect:setColor(part, r, g, b, a)
-	local db = Vect.db.profile;
+function Rect:setColor(part, r, g, b, a)
+	local db = Rect.db.profile;
 	
 	if not db["color"][part] then db["color"][part] = {} end
 	
@@ -367,54 +367,54 @@ function Vect:setColor(part, r, g, b, a)
 end
 
 --Debug settings
-function Vect:getDebugLevel()
-	local db = Vect.db.profile;
+function Rect:getDebugLevel()
+	local db = Rect.db.profile;
 	return db["debugLevel"];
 end
 
-function Vect:setDebugLevel(v)
-	local db = Vect.db.profile;
+function Rect:setDebugLevel(v)
+	local db = Rect.db.profile;
 	db["debugLevel"] = v;
 end
 		
-function Vect:getSpellCastDebug()
-	local db = Vect.db.profile;
+function Rect:getSpellCastDebug()
+	local db = Rect.db.profile;
 	return db["spellCastDebug"];
 end
 
-function Vect:setSpellCastDebug(v)
-	local db = Vect.db.profile;
+function Rect:setSpellCastDebug(v)
+	local db = Rect.db.profile;
 	db["spellCastDebug"] = v;
 end
 
-function Vect:getSpellAuraDebug()
-	local db = Vect.db.profile;
+function Rect:getSpellAuraDebug()
+	local db = Rect.db.profile;
 	return db["spellAuraDebug"];
 end
 
-function Vect:setSpellAuraDebug(v)
-	local db = Vect.db.profile;
+function Rect:setSpellAuraDebug(v)
+	local db = Rect.db.profile;
 	db["spellAuraDebug"] = v;
 end
 
-function Vect:getAllCDebug()
-	local db = Vect.db.profile;
+function Rect:getAllCDebug()
+	local db = Rect.db.profile;
 	return db["allCDebug"];
 end
 
-function Vect:setAllCDebug(v)
-	local db = Vect.db.profile;
+function Rect:setAllCDebug(v)
+	local db = Rect.db.profile;
 	db["allCDebug"] = v;
 end
 
-function Vect:getSelfCDRegister()
-	local db = Vect.db.profile;
+function Rect:getSelfCDRegister()
+	local db = Rect.db.profile;
 	return db["selfCDRegister"];
 end
 
-function Vect:setSelfCDRegister(v)
-	local db = Vect.db.profile;
+function Rect:setSelfCDRegister(v)
+	local db = Rect.db.profile;
 	db["selfCDRegister"] = v;
-	Vect:ReassignCds("target");
-	Vect:ReassignCds("focus");
+	Rect:ReassignCds("target");
+	Rect:ReassignCds("focus");
 end

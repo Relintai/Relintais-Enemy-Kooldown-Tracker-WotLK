@@ -7,26 +7,26 @@ local libSharedMedia = LibStub("LibSharedMedia-3.0");
 local libDRData = LibStub('DRData-1.0');
 
 --DR db functions
-function Vect:DRDebuffGained(spellID, dstGUID, isPlayer)
-	local db =  Vect.db.profile;
+function Rect:DRDebuffGained(spellID, dstGUID, isPlayer)
+	local db =  Rect.db.profile;
 	if not db["enabled"] then return end;
 
-	if not Vect.drs[dstGUID] then
-		 Vect.drs[dstGUID] = {}
+	if not Rect.drs[dstGUID] then
+		 Rect.drs[dstGUID] = {}
 	end
 
 	local drCat = libDRData:GetSpellCategory(spellID);
 	local spellName, spellRank, spellIcon = GetSpellInfo(spellID);
 
-	Vect:UpdateDRs(dstGUID);
+	Rect:UpdateDRs(dstGUID);
 	
-	if not Vect.drs[dstGUID][drCat] then
+	if not Rect.drs[dstGUID][drCat] then
 		local cd = 18;
 		local currentTime = GetTime();
 		local endTime = currentTime + cd;
 		local diminished = 1;
 		local isDiminishingStarted = false;
-		Vect.drs[dstGUID][drCat] = {
+		Rect.drs[dstGUID][drCat] = {
 			currentTime,
 			endTime,
 			cd,
@@ -40,20 +40,20 @@ function Vect:DRDebuffGained(spellID, dstGUID, isPlayer)
 		local cd = 18;
 		local currentTime = GetTime();
 		local endTime = currentTime + cd;
-		Vect.drs[dstGUID][drCat][1] = currentTime;
-		Vect.drs[dstGUID][drCat][2] = currentTime + cd;
-		Vect.drs[dstGUID][drCat][4] = spellIcon;
-		Vect.drs[dstGUID][drCat][5] = spellID;
-		Vect.drs[dstGUID][drCat][6] = Vect.drs[dstGUID][drCat][6] + 1;
-		Vect.drs[dstGUID][drCat][7] = false;
+		Rect.drs[dstGUID][drCat][1] = currentTime;
+		Rect.drs[dstGUID][drCat][2] = currentTime + cd;
+		Rect.drs[dstGUID][drCat][4] = spellIcon;
+		Rect.drs[dstGUID][drCat][5] = spellID;
+		Rect.drs[dstGUID][drCat][6] = Rect.drs[dstGUID][drCat][6] + 1;
+		Rect.drs[dstGUID][drCat][7] = false;
 		
 		--reset it back to 1, x > 3 means, the server updated the dr in less than 18 sec.
-		if Vect.drs[dstGUID][drCat][6] > 3 then
-			Vect.drs[dstGUID][drCat][6] = 1;
+		if Rect.drs[dstGUID][drCat][6] > 3 then
+			Rect.drs[dstGUID][drCat][6] = 1;
 		end
 	end
 	
-	--self:Print(Vect.cds[srcGUID][spellID][1] .. " " .. Vect.cds[srcGUID][spellID][2] .. " " .. Vect.cds[srcGUID][spellID][3]);
+	--self:Print(Rect.cds[srcGUID][spellID][1] .. " " .. Rect.cds[srcGUID][spellID][2] .. " " .. Rect.cds[srcGUID][spellID][3]);
 	
 	if self.targets["target"] == dstGUID then
 		self:ReassignDRs("targetdr");
@@ -68,27 +68,27 @@ function Vect:DRDebuffGained(spellID, dstGUID, isPlayer)
 	end
 end
 
-function Vect:DRDebuffFaded(spellID, dstGUID, isPlayer)
-	local db =  Vect.db.profile;
+function Rect:DRDebuffFaded(spellID, dstGUID, isPlayer)
+	local db =  Rect.db.profile;
 	if not db["enabled"] then return end;
 
-	if not Vect.drs[dstGUID] then 
-		 Vect.drs[dstGUID] = {}
+	if not Rect.drs[dstGUID] then 
+		 Rect.drs[dstGUID] = {}
 	end
 
 	local drCat = libDRData:GetSpellCategory(spellID);
 	local spellName, spellRank, spellIcon = GetSpellInfo(spellID);
 
-	Vect:UpdateDRs(dstGUID);
+	Rect:UpdateDRs(dstGUID);
 	
-	if not Vect.drs[dstGUID][drCat] then
+	if not Rect.drs[dstGUID][drCat] then
 		--means we didn't see it applied
 		local cd = 18;
 		local currentTime = GetTime();
 		local endTime = currentTime + cd;
 		local diminished = 1;
 		local isDiminishingStarted = true;
-		Vect.drs[dstGUID][drCat] = {
+		Rect.drs[dstGUID][drCat] = {
 			currentTime,
 			endTime,
 			cd,
@@ -102,12 +102,12 @@ function Vect:DRDebuffFaded(spellID, dstGUID, isPlayer)
 		local cd = 18;
 		local currentTime = GetTime();
 		local endTime = currentTime + cd;
-		Vect.drs[dstGUID][drCat][1] = currentTime;
-		Vect.drs[dstGUID][drCat][2] = endTime;
-		Vect.drs[dstGUID][drCat][7] = true;
+		Rect.drs[dstGUID][drCat][1] = currentTime;
+		Rect.drs[dstGUID][drCat][2] = endTime;
+		Rect.drs[dstGUID][drCat][7] = true;
 	end
 
-	--self:Print(Vect.cds[srcGUID][spellID][1] .. " " .. Vect.cds[srcGUID][spellID][2] .. " " .. Vect.cds[srcGUID][spellID][3]);
+	--self:Print(Rect.cds[srcGUID][spellID][1] .. " " .. Rect.cds[srcGUID][spellID][2] .. " " .. Rect.cds[srcGUID][spellID][3]);
 	
 	if self.targets["target"] == dstGUID then
 		self:ReassignDRs("targetdr");
@@ -122,13 +122,13 @@ function Vect:DRDebuffFaded(spellID, dstGUID, isPlayer)
 	end
 end
 
-function Vect:ReassignDRs(which)
-	local db =  Vect.db.profile;
+function Rect:ReassignDRs(which)
+	local db =  Rect.db.profile;
 	--bail out early, if frames are disabled
 	if not db[which]["enabled"] or not db["enabled"] then return end;
 	--first hide all
 	for i = 1, 18 do
-		local frame = Vect.frames[which][i]["frame"];
+		local frame = Rect.frames[which][i]["frame"];
 		frame:Hide();
 	end
 	--check if frames are unlocked
@@ -145,18 +145,18 @@ function Vect:ReassignDRs(which)
 
 	if not self.drs[self.targets[whichs]] then return end;
 	--update then
-	Vect:UpdateDRs(self.targets[whichs]);
+	Rect:UpdateDRs(self.targets[whichs]);
 	--sort them
-	local tmp = Vect:SortDRs(whichs);
+	local tmp = Rect:SortDRs(whichs);
 	--let's fill them up
 	local i = 1;
 	for k, v in ipairs(tmp) do
 		--self:Print(v["spellID"]);
-		local frame = Vect.frames[which][i]["frame"];
-		local text = Vect.frames[which][i]["texture"];
+		local frame = Rect.frames[which][i]["frame"];
+		local text = Rect.frames[which][i]["texture"];
 		text:SetTexture(v["spellIcon"]);
-		local CoolDown = Vect.frames[which][i]["cooldown"];
-		local t = Vect.frames[which][i]["text"];
+		local CoolDown = Rect.frames[which][i]["cooldown"];
+		local t = Rect.frames[which][i]["text"];
 		if v["isDiminishingStarted"] then
 			CoolDown:SetCooldown(v["currentTime"], v["cd"]);
 		else
@@ -173,8 +173,8 @@ function Vect:ReassignDRs(which)
 	end
 end
 
-function Vect:SortDRs(which)
-	local db = Vect.db.profile;
+function Rect:SortDRs(which)
+	local db = Rect.db.profile;
 	local tmp = {};
 
 	--make the tmp table
@@ -200,23 +200,23 @@ function Vect:SortDRs(which)
 	if which == "self" then which = "selfdr" end
 	
 	if db[which]["sortOrder"] == "1" then --["1"] = "Ascending (CD left)",
-		table.sort(tmp, function(a, b) return Vect:ComparerAscendingCDLeft(a, b) end);
+		table.sort(tmp, function(a, b) return Rect:ComparerAscendingCDLeft(a, b) end);
 	elseif db[which]["sortOrder"] == "2" then --["2"] = "Descending (CD left)",
-		table.sort(tmp, function(a, b) return Vect:ComparerDescendingCDLeft(a, b) end);
+		table.sort(tmp, function(a, b) return Rect:ComparerDescendingCDLeft(a, b) end);
 	elseif db[which]["sortOrder"] == "3" then --["3"] = "Ascending (CD total)",
-		table.sort(tmp, function(a, b) return Vect:ComparerAscendingCDTotal(a, b) end);
+		table.sort(tmp, function(a, b) return Rect:ComparerAscendingCDTotal(a, b) end);
 	elseif db[which]["sortOrder"] == "4" then --["4"] = "Descending (CD total)",
-		table.sort(tmp, function(a, b) return Vect:ComparerDescendingCDTotal(a, b) end);
+		table.sort(tmp, function(a, b) return Rect:ComparerDescendingCDTotal(a, b) end);
 	elseif db[which]["sortOrder"] == "5" then --["5"] = "Recent first",
-		table.sort(tmp, function(a, b) return Vect:ComparerRecentFirst(a, b) end);
+		table.sort(tmp, function(a, b) return Rect:ComparerRecentFirst(a, b) end);
 	elseif db[which]["sortOrder"] == "6" then --["6"] = "Recent Last",
-		table.sort(tmp, function(a, b) return Vect:ComparerRecentLast(a, b) end);
+		table.sort(tmp, function(a, b) return Rect:ComparerRecentLast(a, b) end);
 	end
 	--["7"] = "No order"
 	return tmp;
 end
 
-function Vect:CreateDRFrames(which)
+function Rect:CreateDRFrames(which)
 	for i = 1, 18 do
 		local frame = CreateFrame("Frame", nil, UIParent, nil);
 		frame:SetFrameStrata("MEDIUM");
@@ -239,7 +239,7 @@ function Vect:CreateDRFrames(which)
 		text:SetTexture("Interface\\Icons\\Spell_Arcane_Blink")
 		text:SetAllPoints(frame);
 		frame.texture = text;
-		local CoolDown = CreateFrame("Cooldown", "VectCoolDown" .. i, frame);
+		local CoolDown = CreateFrame("Cooldown", "RectCoolDown" .. i, frame);
 		CoolDown:SetAllPoints()
 		CoolDown:SetCooldown(GetTime(), 50);
 		local t = frame:CreateFontString(nil, "OVERLAY");
@@ -247,16 +247,16 @@ function Vect:CreateDRFrames(which)
 		t:SetPoint("CENTER", frame, "CENTER", 0, 0);
 		t:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE, MONOCHROME")
 		--frame:Hide();
-		Vect.frames[which][i] = {}
-		Vect.frames[which][i]["frame"] = frame;
-		Vect.frames[which][i]["texture"] = text;
-		Vect.frames[which][i]["cooldown"] = CoolDown;
-		Vect.frames[which][i]["text"] = t;
+		Rect.frames[which][i] = {}
+		Rect.frames[which][i]["frame"] = frame;
+		Rect.frames[which][i]["texture"] = text;
+		Rect.frames[which][i]["cooldown"] = CoolDown;
+		Rect.frames[which][i]["text"] = t;
 	end
 end
 
-function Vect:MoveDRTimersStop(which)
-	local db = Vect.db.profile;
+function Rect:MoveDRTimersStop(which)
+	local db = Rect.db.profile;
 	local x = db[which]["xPos"];
 	local y = db[which]["yPos"];
 	local size = db[which]["size"];
@@ -265,12 +265,12 @@ function Vect:MoveDRTimersStop(which)
 	local drNumPos = db[which]["drnumposition"];
 
 	for i = 1, 18 do
-		local frame = Vect.frames[which][i]["frame"];
+		local frame = Rect.frames[which][i]["frame"];
 		frame:ClearAllPoints();
 		frame:SetFrameStrata("MEDIUM");
 		frame:SetWidth(size);
 		frame:SetHeight(size);
-		local text = Vect.frames[which][i]["texture"];
+		local text = Rect.frames[which][i]["texture"];
 		text:SetAllPoints(frame);
 		frame.texture = text;
 		--set them based on the grow type
@@ -284,7 +284,7 @@ function Vect:MoveDRTimersStop(which)
 			frame:SetPoint("BOTTOMLEFT", x - ((i - 1) * size), y);
 		end
 		
-		local t = Vect.frames[which][i]["text"];
+		local t = Rect.frames[which][i]["text"];
 		t:ClearAllPoints();
 		
 		--check if we need numbers
@@ -308,14 +308,14 @@ function Vect:MoveDRTimersStop(which)
 			t:SetPoint("CENTER", frame, "CENTER", xOSet, yOSet);
 		end
 		
-		local CoolDown = Vect.frames[which][i]["cooldown"];
+		local CoolDown = Rect.frames[which][i]["cooldown"];
 		CoolDown:SetAllPoints();
 		--frame:Show();
 	end
 end
 
-function Vect:VOnDRTimerUpdate(which)
-	if Vect:UpdateDRs(self.targets[which]) then
+function Rect:VOnDRTimerUpdate(which)
+	if Rect:UpdateDRs(self.targets[which]) then
 		--we have to update every three, because if somebody is targeted and focused since sorting is 
 		--implemented it triggers only one update, probably it had bugs before too, but got unnoticed
 		self:ReassignDRs("targetdr");
@@ -324,7 +324,7 @@ function Vect:VOnDRTimerUpdate(which)
 	end
 end
 
-function Vect:UpdateDRs(unitGUID)
+function Rect:UpdateDRs(unitGUID)
 	if not unitGUID then return end;
 	--check if we have dr for that unit
 	if not self.drs[unitGUID] then return end
@@ -340,11 +340,11 @@ function Vect:UpdateDRs(unitGUID)
 	return found;
 end
 
-function Vect:HideSelfDRFrames()
-	if not Vect.frames["selfdr"][1] then return end;
+function Rect:HideSelfDRFrames()
+	if not Rect.frames["selfdr"][1] then return end;
 
 	for i = 1, 18 do
-		local frame = Vect.frames["selfdr"][i]["frame"];
+		local frame = Rect.frames["selfdr"][i]["frame"];
 		frame:Hide();
 	end
 end

@@ -4,8 +4,7 @@
 
 --spellid -> the spell's id
 --cd -> base cooldown for the spell, this will be used until the spec is detected (if its on, else this will be used)
---		NOTE: cds are in seconds, and if the tooltip shows like 2.1M then you convert it like this: 2.1 * 60 = 126, 
---				and not like (2 * 60) = 120 sec + (0.1 * 10) = 130 sec
+--		NOTE: cds are in seconds, and if the tooltip shows like 2.1M then you convert it like this: 2.1 * 60 = 126
 --reset -> lua array, when the spell is cast these will be removed from the caster's spells (check Cold Snap or Preparation for an example)
 --spec1cd, spec2cd, spec3cd ->cds on different specs, its in talent tree order e.g. Mage spec1 = Arcane, spec2 = Fire, spec3 = Arcane
 --spec -> the addon detects the spec based on this, 0 to ignore, 3 switch to spec 1, 4 switch to spec2, 5 switch to spec 5
@@ -14,7 +13,9 @@
 --			values: silence,gapcloser,defensive,potion,nuke,anticc,cc,stun,disarm,cdreset,shield,uncategorized
 --ispetspell -> if its a pet spell true, else false
 
-Vect.spells = {
+--TODO recklessness value!
+
+Rect.spells = {
 	--Trinkets
 	[42292] = {120, nil, 120, 120, 120, 0, "", "anticc", false}, --PvP Trinket
 	--Other Stuff
@@ -164,7 +165,7 @@ Vect.spells = {
 		63670,63671,63672,19263,781,13813,14316,14317,
 		27025,49066,49067,60192,1499,14310,14311,13809,
 		13795,14302,14303,14304,14305,27023,49055,49056,
-		19503,34600,19386,24132,24133,27068,49011,49012, "Hunter", "cdreset", false}, 180, 180, 180, 4, "", "cdreset", false}, --Readiness
+		19503,34600,19386,24132,24133,27068,49011,49012}, 180, 180, 180, 4, "Hunter", "cdreset", false}, --Readiness
 	[34490] = {20, nil, 20, 20, 20, 4, "Hunter", "silence", false}, --Silencing Shot
 	--Detection
 	[53209] = {0, nil, 0, 0, 0, 4, "Hunter", "", false}, --Chimera Shot

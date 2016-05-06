@@ -1,6 +1,6 @@
 
 --["1"] = "Ascending (CD left)",
-function Vect:ComparerAscendingCDLeft(a, b)
+function Rect:ComparerAscendingCDLeft(a, b)
 	if a.endTime < b.endTime then
 		return true;
 	else
@@ -9,7 +9,7 @@ function Vect:ComparerAscendingCDLeft(a, b)
 end
 
 --["2"] = "Descending (CD left)",
-function Vect:ComparerDescendingCDLeft(a, b)
+function Rect:ComparerDescendingCDLeft(a, b)
 	if a.endTime < b.endTime then
 		return false;
 	else
@@ -18,7 +18,7 @@ function Vect:ComparerDescendingCDLeft(a, b)
 end
 
 --["3"] = "Ascending (CD total)",
-function Vect:ComparerAscendingCDTotal(a, b)
+function Rect:ComparerAscendingCDTotal(a, b)
 	if a.cd < b.cd then
 		return true;
 	else
@@ -27,7 +27,7 @@ function Vect:ComparerAscendingCDTotal(a, b)
 end
 
 --["4"] = "Descending (CD total)",
-function Vect:ComparerDescendingCDTotal(a, b)
+function Rect:ComparerDescendingCDTotal(a, b)
 	if a.cd < b.cd then
 		return false;
 	else
@@ -36,7 +36,7 @@ function Vect:ComparerDescendingCDTotal(a, b)
 end
 
 --["5"] = "Recent first",
-function Vect:ComparerRecentFirst(a, b)
+function Rect:ComparerRecentFirst(a, b)
 	if a.currentTime < b.currentTime then
 		return false;
 	else
@@ -45,7 +45,7 @@ function Vect:ComparerRecentFirst(a, b)
 end
 
 --["6"] = "Recent Last",
-function Vect:ComparerRecentLast(a, b)
+function Rect:ComparerRecentLast(a, b)
 	if a.currentTime < b.currentTime then
 		return true;
 	else
@@ -56,8 +56,8 @@ end
 --CD Type sorters
 
 --["1"] = "Ascending (CD left)",
-function Vect:ComparerAscendingCDLeftT(a, b)
-	local db = Vect.db.profile;
+function Rect:ComparerAscendingCDLeftT(a, b)
+	local db = Rect.db.profile;
 
 	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
 		return true;
@@ -73,8 +73,8 @@ function Vect:ComparerAscendingCDLeftT(a, b)
 end
 
 --["2"] = "Descending (CD left)",
-function Vect:ComparerDescendingCDLeftT(a, b)
-	local db = Vect.db.profile;
+function Rect:ComparerDescendingCDLeftT(a, b)
+	local db = Rect.db.profile;
 
 	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
 		return true;
@@ -90,8 +90,8 @@ function Vect:ComparerDescendingCDLeftT(a, b)
 end
 
 --["3"] = "Ascending (CD total)",
-function Vect:ComparerAscendingCDTotalT(a, b)
-	local db = Vect.db.profile;
+function Rect:ComparerAscendingCDTotalT(a, b)
+	local db = Rect.db.profile;
 
 	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
 		return true;
@@ -107,8 +107,8 @@ function Vect:ComparerAscendingCDTotalT(a, b)
 end
 
 --["4"] = "Descending (CD total)",
-function Vect:ComparerDescendingCDTotalT(a, b)
-	local db = Vect.db.profile;
+function Rect:ComparerDescendingCDTotalT(a, b)
+	local db = Rect.db.profile;
 
 	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
 		return true;
@@ -124,8 +124,8 @@ function Vect:ComparerDescendingCDTotalT(a, b)
 end
 
 --["5"] = "Recent first",
-function Vect:ComparerRecentFirstT(a, b)
-	local db = Vect.db.profile;
+function Rect:ComparerRecentFirstT(a, b)
+	local db = Rect.db.profile;
 
 	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
 		return true;
@@ -141,8 +141,8 @@ function Vect:ComparerRecentFirstT(a, b)
 end
 
 --["6"] = "Recent Last",
-function Vect:ComparerRecentLastT(a, b)
-	local db = Vect.db.profile;
+function Rect:ComparerRecentLastT(a, b)
+	local db = Rect.db.profile;
 
 	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
 		return true;
