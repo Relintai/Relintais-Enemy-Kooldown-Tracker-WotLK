@@ -11,6 +11,9 @@
 embeds.xml
 data\global.lua
 data\spells.lua
+data\optiontable.lua
 data\options.lua
 data\sorters.lua
+data\drs.lua
+data\cooldowns.lua
 Vect.lua
