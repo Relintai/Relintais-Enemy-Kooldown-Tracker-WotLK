@@ -1,5 +1,5 @@
 
-local adbo = LibStub("AceDBOptions-3.0")
+local aceDBOptions = LibStub("AceDBOptions-3.0")
 
 function Vect:GetVectOptions()
 	local db = self.db.profile;
@@ -22,11 +22,11 @@ function Vect:GetVectOptions()
 					end
 			},
 			targetandfocus = {
-				type = "group", name = "T. and F. CDs", desc = "Cooldown frame's settings.", childGroups = "tab", order = 2,
+				type = "group", name = "CDs", desc = "Cooldown frame's settings.", childGroups = "tab", order = 2,
 				args = Vect:getTargetandFocusOptions();
 			},
 			droptions = {
-				type = "group", name = "T. and F. DRs", desc = "DR frame's settings.", childGroups = "tab",order = 3,
+				type = "group", name = "DRs", desc = "DR frame's settings.", childGroups = "tab",order = 3,
 				args = Vect:getDROptions();
 			},
 			selfdr = {
@@ -34,9 +34,10 @@ function Vect:GetVectOptions()
 				args = Vect:getSelfDROptions()
 			},
 			debugoptions = {
-				type = "group", name = "Debug", desc = "Debug settings.", childGroups = "tab",order = 5,
+				type = "group", name = "Debug", desc = "Debug settings.", childGroups = "tab", order = 5,
 				args = Vect:getDebugOptions();
-			}
+			},
+			profileoptions = aceDBOptions:GetOptionsTable(self.db)
 		}
 	}
 	return options;

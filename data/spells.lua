@@ -1,3 +1,4 @@
+
 Vect.spells = {
 	--Trinkets
 	[42292] = {120, nil}, --PvP Trinket
