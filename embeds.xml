@@ -4,14 +4,21 @@
 ..\FrameXML\UI.xsd">
 <!--@no-lib-strip@-->
   <Script file="lib\LibStub\LibStub.lua" />
+  <Include file="lib\CallbackHandler-1.0\CallbackHandler-1.0.xml" />
   <Include file="lib\AceAddon-3.0\AceAddon-3.0.xml" />
+  <Include file="lib\AceBucket-3.0\AceBucket-3.0.xml" />
   <Include file="lib\AceConfig-3.0\AceConfig-3.0.xml" />
   <Include file="lib\AceConsole-3.0\AceConsole-3.0.xml" />
   <Include file="lib\AceDB-3.0\AceDB-3.0.xml" />
   <Include file="lib\AceDBOptions-3.0\AceDBOptions-3.0.xml" />
   <Include file="lib\AceEvent-3.0\AceEvent-3.0.xml" />
   <Include file="lib\AceGUI-3.0\AceGUI-3.0.xml" />
-  <Include file="lib\CallbackHandler-1.0\CallbackHandler-1.0.xml" />
+  <Include file="lib\AceHook-3.0\AceHook-3.0.xml" />
+  <Include file="lib\AceLocale-3.0\AceLocale-3.0.xml" />
+  <Include file="lib\AceSerializer-3.0\AceSerializer-3.0.xml" />
+  <Include file="lib\AceTab-3.0\AceTab-3.0.xml" />
+  <Include file="lib\AceTimer-3.0\AceTimer-3.0.xml" />
+  <Include file="lib\DRData-1.0\DRData-1.0.xml" />
   <Include file="Lib\LibSharedMedia-3.0\lib.xml" />
 <!--@end-no-lib-strip@-->
 </Ui>

@@ -3,6 +3,8 @@
 --Enable/disable on frames
 --Player Entering World -> cleanup the db
 --CD Sort Order
+--Chat Command
+--DR timers
 
 --"Globals"
 local aceDB = LibStub("AceDB-3.0")

@@ -22,40 +22,40 @@ function Vect:GetVectOptions()
 					end
 			},
 			targetandfocus = {
-				type = "group", name = "T. and F. CDs", desc = "Cooldown frame's settings.", childGroups = "tab", order = 3,
+				type = "group", name = "T. and F. CDs", desc = "Cooldown frame's settings.", childGroups = "tab", order = 2,
 				args = Vect:getTargetandFocusOptions();
 			},
 			droptions = {
-				type = "group", name = "T. and F. DRs", desc = "DR frame's settings.", childGroups = "tab",order = 4,
+				type = "group", name = "T. and F. DRs", desc = "DR frame's settings.", childGroups = "tab",order = 3,
 				args = Vect:getDROptions();
 			},
 			selfdr = {
-				type = "group", name = "Self DRs", desc = "Self DR frame's settings.", childGroups = "tab",order = 5,
+				type = "group", name = "Self DRs", desc = "Self DR frame's settings.", childGroups = "tab",order = 4,
 				args = Vect:getSelfDROptions()
 			},
 			debugoptions = {
-				type = "group", name = "Debug", desc = "Debug settings.", childGroups = "tab",order = 6,
+				type = "group", name = "Debug", desc = "Debug settings.", childGroups = "tab",order = 5,
 				args = Vect:getDebugOptions();
 			}
 		}
 	}
 	return options;
 end
-
+--order 10-20
 function Vect:getTargetandFocusOptions()
 	local args = {
 		targetHeader = {
 			type = "header", name = "Target's settings", order = 10
 		},
 		targettoggle = {
-			type = "toggle", name = "Target", desc = "Enable/Disable showing the target's cooldowns", order = 3,
+			type = "toggle", name = "Target", desc = "Enable/Disable showing the target's cooldowns", order = 11,
 			get = function() return Vect:isPartEnabled("target") end,
 			set = function(_, v)
 				Vect:SetPartEnabledOrDisabled("target", v);
 			end
 		},
 		targetrange = {
-			type = "range", name = "Target's size", order = 11, min = 10, max = 150, step = 1,
+			type = "range", name = "Target's size", order = 12, min = 10, max = 150, step = 1,
 			get = function() return Vect:getFrameSize("target") end,
 			set = function(_, v)
 				Vect:setFrameSize("target", v);
@@ -64,7 +64,7 @@ function Vect:getTargetandFocusOptions()
 		},
 		targetGrowSelect = {
 			type = "select", style = "dropdown", name = "targetGrow", 
-			desc = "Change which way the target's cooldowns will grow", order = 12, 
+			desc = "Change which way the target's cooldowns will grow", order = 13, 
 			values = {
 				["1"] = "Up",
 				["2"] = "Right",
@@ -78,7 +78,7 @@ function Vect:getTargetandFocusOptions()
 		},
 		targetSortSelect = {
 			type = "select", style = "dropdown", name = "targetSortOrder", 
-			desc = "Change the target's cooldowns's sort order", order = 13, 
+			desc = "Change the target's cooldowns's sort order", order = 14, 
 			values = {
 				["1"] = "Ascending",
 				["2"] = "Descending",
@@ -91,18 +91,18 @@ function Vect:getTargetandFocusOptions()
 				Vect:setSortOrder("target", v);
 			end
 		},
-				focusHeader = {
-			type = "header", name = "Focus's settings", order = 14
+		focusHeader = {
+			type = "header", name = "Focus's settings", order = 15
 		},
 		focustoggle = {
-				type = "toggle", name = "Focus", desc = "Enable/Disable showing the focus's cooldowns", order = 8,
+				type = "toggle", name = "Focus", desc = "Enable/Disable showing the focus's cooldowns", order = 16,
 				get = function() return Vect:isPartEnabled("focus") end,
 				set = function(_, v)
 					Vect:SetPartEnabledOrDisabled("focus", v);
 				end
 		},
 		focusRange = {
-				type = "range", name = "Focus's size", order = 15, min = 10, max = 150, step = 1,
+				type = "range", name = "Focus's size", order = 17, min = 10, max = 150, step = 1,
 				get = function() return Vect:getFrameSize("focus") end,
 				set = function(_, v)
 					Vect:setFrameSize("focus", v);
@@ -110,7 +110,7 @@ function Vect:getTargetandFocusOptions()
 		},
 		focusGrowSelect = {
 			type = "select", style = "dropdown", name = "focusGrow", 
-			desc = "Change which way the focus's cooldowns will grow", order = 16, 
+			desc = "Change which way the focus's cooldowns will grow", order = 18, 
 			values = {
 				["1"] = "Up",
 				["2"] = "Right",
@@ -124,7 +124,7 @@ function Vect:getTargetandFocusOptions()
 		},
 		focusSortSelect = {
 			type = "select", style = "dropdown", name = "focusSortOrder", 
-			desc = "Change the focus's cooldowns's sort order", order = 17, 
+			desc = "Change the focus's cooldowns's sort order", order = 19, 
 			values = {
 				["1"] = "Ascending",
 				["2"] = "Descending",
