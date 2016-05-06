@@ -5,6 +5,7 @@
 --fix libdrdata, its dr groups are bad
 --spec detection
 --Way to show pet cds on the master -> currently looks impossible
+--add every version for arcane torrent (BE racial)
 
 --"Globals"
 local aceDB = LibStub("AceDB-3.0");

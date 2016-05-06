@@ -82,13 +82,6 @@ Data.spells = {
 	[36213] = "taunt",
 	
 	--[[ DISORIENTS ]]--
-	-- Dragon's Breath
-	[31661] = "disorient",
-	[33041] = "disorient",
-	[33042] = "disorient",
-	[33043] = "disorient",
-	[42949] = "disorient",
-	[42950] = "disorient",
 	
 	-- Hungering Cold
 	[49203] = "disorient",
@@ -417,9 +410,17 @@ Data.spells = {
 	[64044] = "horror",
 	
 	--[[ MISC ]]--
+	-- Dragon's Breath
+	[31661] = "scatters",
+	[33041] = "scatters",
+	[33042] = "scatters",
+	[33043] = "scatters",
+	[42949] = "scatters",
+	[42950] = "scatters",
+	
 	-- Scatter Shot
 	[19503] = "scatters",
-
+	
 	-- Cheap Shot
 	[1833] = "cheapshot",
 

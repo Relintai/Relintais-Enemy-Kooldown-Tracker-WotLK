@@ -145,11 +145,18 @@ function Vect:ReassignDRs(which)
 		local text = Vect.frames[which][i]["texture"];
 		text:SetTexture(v["spellIcon"]);
 		local CoolDown = Vect.frames[which][i]["cooldown"];
+		local t = Vect.frames[which][i]["text"];
 		if v["isDiminishingStarted"] then
 			CoolDown:SetCooldown(v["currentTime"], v["cd"]);
 		else
 			CoolDown:SetCooldown(v["currentTime"], 0);
 		end
+		
+		--print it out, if we need to
+		if db[which]["drnumsize"] > 0 then
+			t:SetText(v["diminished"]);
+		end
+		
 		frame:Show();
 		i = i + 1;
 	end
@@ -243,7 +250,9 @@ function Vect:MoveDRTimersStop(which)
 	local y = db[which]["yPos"];
 	local size = db[which]["size"];
 	local growOrder = db[which]["growOrder"];
-	
+	local drNumSize = db[which]["drnumsize"];
+	local drNumPos = db[which]["drnumposition"];
+
 	for i = 1, 18 do
 		local frame = Vect.frames[which][i]["frame"];
 		frame:ClearAllPoints();
@@ -263,6 +272,31 @@ function Vect:MoveDRTimersStop(which)
 		else --Left
 			frame:SetPoint("BOTTOMLEFT", x - ((i - 1) * size), y);
 		end
+		
+		local t = Vect.frames[which][i]["text"];
+		t:ClearAllPoints();
+		
+		--check if we need numbers
+		if (drNumSize > 0) then
+			local xOSet = 0;
+			local yOSet = 0;
+			
+			t:SetFont("Fonts\\FRIZQT__.TTF", drNumSize, "OUTLINE, MONOCHROME")
+			
+			--position it
+			if (drNumPos == "1") then --["1"] = "Up",
+				yOSet = ((drNumSize / 2) + (size / 2) + 2);
+			elseif (drNumPos == "2") then --["2"] = "Right",
+				xOSet = ((size / 2) + 5);
+			elseif (drNumPos == "3") then --["3"] = "Down",
+				yOSet = -((drNumSize / 2) + (size / 2) + 2);
+			elseif (drNumPos == "4") then --["4"] = "Left",
+				xOSet = -((size / 2) + 5);
+			end --["5"] = "Middle"
+
+			t:SetPoint("CENTER", frame, "CENTER", xOSet, yOSet);
+		end
+		
 		local CoolDown = Vect.frames[which][i]["cooldown"];
 		CoolDown:SetAllPoints();
 		--frame:Show();
@@ -286,4 +320,18 @@ function Vect:VOnDRTimerUpdate(which)
 			self:ReassignDRs("selfdr");
 		end
 	end
+end
+
+function Vect:getDRNumXOffset(size, drNumSize, drNumPos)
+	local db = Vect.db.profile;
+
+
+	return 0;
+end
+
+function Vect:getDRNumYOffset(size, drNumSize, drNumPos)
+	local db = Vect.db.profile;
+
+	
+	return 0;
 end
