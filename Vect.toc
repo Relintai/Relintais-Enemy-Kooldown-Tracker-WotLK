@@ -1,5 +1,5 @@
 ## Interface: 30300
-## Author: Verot
+## Author: Verot (AVeroth)
 ## Name: Vect
 ## Title: Vect
 ## Notes: Verot's Enemy Cooldown Tracker.

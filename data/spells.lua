@@ -4,6 +4,8 @@
 
 --spellid -> the spell's id
 --cd -> base cooldown for the spell, this will be used until the spec is detected (if its on, else this will be used)
+--		NOTE: cds are in seconds, and if the tooltip shows like 2.1M then you convert it like this: 2.1 * 60 = 126, 
+--				and not like (2 * 60) = 120 sec + (0.1 * 10) = 130 sec
 --reset -> lua array, when the spell is cast these will be removed from the caster's spells (check Cold Snap or Preparation for an example)
 --spec1cd, spec2cd, spec3cd ->cds on different specs, its in talent tree order e.g. Mage spec1 = Arcane, spec2 = Fire, spec3 = Arcane
 --spec -> the addon detects the spec based on this, 0 to ignore, 3 switch to spec 1, 4 switch to spec2, 5 switch to spec 5
