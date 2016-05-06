@@ -118,6 +118,16 @@ function Vect:setCDTypeSortingEnable(v)
 	self:ReassignCds("focus");
 end
 
+function Vect:getPetCDGuessing()
+	local db = Vect.db.profile;
+	return db["petcdguessing"];
+end
+
+function Vect:setPetCDGuessing(v)
+	local db = Vect.db.profile;
+	db["petcdguessing"] = v;
+end
+
 --lock
 function Vect:isLocked()
 	return Vect.db.profile["locked"];

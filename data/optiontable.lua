@@ -414,9 +414,9 @@ function Vect:getGlobalOptions()
 				type = "toggle", name = "Pet CD Guessing", 
 				desc = "Enable/Disable Pet Cd Guessing, this will show pet cds on all possible masters, since there is no reasonable way of determining who's pet it is from combatlog events and GUIDs, this will be really inaccurate if there are 2-3 lock for example.", 
 				order = 12,
-				get = function() return Vect:isSpecDetectionEnabled() end,
+				get = function() return Vect:getPetCDGuessing() end,
 				set = function(_, v)
-					Vect:setSpecDetectionEnabledorDisabled(v);
+					Vect:setPetCDGuessing(v);
 				end
 		},
 		globalcdtypesortHeader = {

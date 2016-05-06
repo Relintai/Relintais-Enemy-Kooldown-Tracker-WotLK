@@ -6,7 +6,7 @@
 ## DefaultState: Enabled
 ## OptionalDeps: Ace3
 ## SavedVariables: VectDB
-## Version: 0.9
+## Version: 1.0RC1
 
 embeds.xml
 data\global.lua

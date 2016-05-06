@@ -1,11 +1,4 @@
 
---TODOS:
---Option to show pet cds on possible master (eg spell lock on all locks)
-
---document the db these will be needed:
---silence, gapcloser, defensive, potion, nuke, anticc, cc, stun, disarm, cdreset, shield, uncategorized
---db-> class, type, isPet 
-
 --"Globals"
 local aceDB = LibStub("AceDB-3.0");
 local aceCDialog = LibStub("AceConfigDialog-3.0");
@@ -42,6 +35,7 @@ Vect.defaults = {
 		allCDebug = false,
 		selfCDRegister = false,
 		specdetection = false,
+		petcdguessing = true,
 		target = {
 			enabled = true,
 			size = 27,
@@ -92,78 +86,78 @@ Vect.defaults = {
 			drnumsize = 14,
 			drnumposition = 1
 		},
-		colors = {
-			["gapcloser"] = {
-				["a"] = 1,
-				["b"] = 0,
-				["g"] = 0.8117647058823529,
-				["r"] = 1,
+		color = {
+			gapcloser = {
+				a = 1,
+				b = 0,
+				g = 0.8117647058823529,
+				r = 1,
 			},
-			["anticc"] = {
-				["a"] = 1,
-				["b"] = 0.796078431372549,
-				["g"] = 1,
-				["r"] = 0,
+			anticc = {
+				a = 1,
+				b = 0.796078431372549,
+				g = 1,
+				r = 0,
 			},
-			["disarm"] = {
-				["a"] = 1,
-				["b"] = 0.9647058823529412,
-				["g"] = 1,
-				["r"] = 0,
+			disarm = {
+				a = 1,
+				b = 0.9647058823529412,
+				g = 1,
+				r = 0,
 			},
-			["defensive"] = {
-				["a"] = 1,
-				["b"] = 0.08627450980392157,
-				["g"] = 1,
-				["r"] = 0.2,
+			defensive = {
+				a = 1,
+				b = 0.08627450980392157,
+				g = 1,
+				r = 0.2,
 			},
-			["nuke"] = {
-				["a"] = 1,
-				["b"] = 0,
-				["g"] = 0,
-				["r"] = 1,
+			nuke = {
+				a = 1,
+				b = 0,
+				g = 0,
+				r = 1,
 			},
-			["shield"] = {
-				["a"] = 1,
-				["b"] = 0.3333333333333333,
-				["g"] = 1,
-				["r"] = 0.8901960784313725,
+			shield = {
+				a = 1,
+				b = 0.3333333333333333,
+				g = 1,
+				r = 0.8901960784313725,
 			},
-			["potion"] = {
-				["a"] = 1,
-				["b"] = 0.6313725490196078,
-				["g"] = 0.7372549019607844,
-				["r"] = 1,
+			potion = {
+				a = 1,
+				b = 0.6313725490196078,
+				g = 0.7372549019607844,
+				r = 1,
 			},
-			["cdreset"] = {
-				["a"] = 1,
-				["b"] = 1,
-				["g"] = 0,
-				["r"] = 0.6274509803921569,
+			cdreset = {
+				a = 1,
+				b = 1,
+				g = 0,
+				r = 0.6274509803921569,
 			},
-			["silence"] = {
-				["a"] = 1,
-				["b"] = 1,
-				["g"] = 0.03529411764705882,
-				["r"] = 0.1882352941176471,
+			silence = {
+				a = 1,
+				b = 1,
+				g = 0.03529411764705882,
+				r = 0.1882352941176471,
 			},
-			["stun"] = {
-				["a"] = 1,
-				["b"] = 1,
-				["g"] = 0.07450980392156863,
-				["r"] = 0.9137254901960784,
+			stun = {
+				a = 1,
+				b = 1,
+				g = 0.07450980392156863,
+				r = 0.9137254901960784,
 			},
-			["uncategorized"] = {
-				["a"] = 1,
-				["b"] = 1,
-				["g"] = 0.9058823529411765,
-				["r"] = 0.9607843137254902,
+			uncategorized = {
+				a = 1,
+				b = 1,
+				g = 0.9058823529411765,
+				r = 0.9607843137254902,
 			},
-			["cc"] = {
-				["a"] = 1,
-				["b"] = 0.3686274509803922,
-				["g"] = 0.3568627450980392,
-				["r"] = 0.3764705882352941,
+			cc = {
+				a = 1,
+				b = 0.3686274509803922,
+				g = 0.3568627450980392,
+				r = 0.3764705882352941,
 			},
 		},
 		cdtypesortorder = {

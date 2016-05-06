@@ -56,7 +56,9 @@ function Vect:AddCd(srcGUID, spellID)
 	
 	if not Vect.cds[srcGUID] then 
 		Vect.cds[srcGUID] = {}
-		Vect.cds[srcGUID]["spec"] = 1;
+		Vect.cds[srcGUID]["spec"] = {};
+		Vect.cds[srcGUID]["spec"][1] = 1;
+		Vect.cds[srcGUID]["spec"][2] = "";
 	end
 	
 	local specchange = false;
@@ -66,8 +68,15 @@ function Vect:AddCd(srcGUID, spellID)
 		end
 	end
 	
-	local spec = Vect.cds[srcGUID]["spec"];
+	local spec = Vect.cds[srcGUID]["spec"][1];
+	local class, isPet = Vect.spells[spellID][7], Vect.spells[spellID][9];
 	local cd, reset, spellCategory = Vect.spells[spellID][spec], Vect.spells[spellID][2], Vect.spells[spellID][8];
+	
+	if db["petcdguessing"] then
+		if (Vect.cds[srcGUID]["spec"][2] == "") and class then
+			Vect.cds[srcGUID]["spec"][2] = class;
+		end
+	end
 	
 	if specchange and (not cd) then
 		if self.targets["target"] == srcGUID then
@@ -94,6 +103,22 @@ function Vect:AddCd(srcGUID, spellID)
 		spellCategory
 	}
 	
+	--add it to every class of the same type
+	if db["petcdguessing"] and isPet then
+		for k, v in pairs(Vect.cds) do
+			if (v["spec"][2] == class) then
+				Vect.cds[k][spellID] = {
+					currentTime,
+					endTime,
+					cd,
+					spellIcon,
+					spellID,
+					spellCategory
+				}
+			end
+		end
+	end
+	
 	--self:Print(Vect.cds[srcGUID][spellID][1] .. " " .. Vect.cds[srcGUID][spellID][2] .. " " .. Vect.cds[srcGUID][spellID][3]);
 	
 	if reset then
@@ -103,11 +128,11 @@ function Vect:AddCd(srcGUID, spellID)
 	--self:Print(self.targets["target"]);
 	--self:Print(s
 	
-	if self.targets["target"] == srcGUID then
+	if self.targets["target"] == srcGUID or isPet then
 		self:ReassignCds("target");
 	end
 	
-	if self.targets["focus"] == srcGUID then
+	if self.targets["focus"] == srcGUID or isPet then
 		self:ReassignCds("focus");
 	end
 end
@@ -116,7 +141,7 @@ function Vect:DetectSpec(srcGUID, spellID)
 	local spec = Vect.spells[spellID][6];
 	
 	if spec == 0 then return false end;
-	if Vect.cds[srcGUID]["spec"] == spec then return false end;
+	if Vect.cds[srcGUID]["spec"][1] == spec then return false end;
 	--self:Print("spec found: " .. spec);
 	Vect:RemapSpecCDs(srcGUID, spec);
 	return true;
