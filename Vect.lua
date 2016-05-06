@@ -183,6 +183,7 @@ function Vect:Reset()
    Vect.drs = {}
    Vect.target = {unitGUID = -1, timers = {}}
    Vect.focus = {unitGUID = -1, timers = {}}
+   Vect:HideSelfDRFrames();
 end
    
 function Vect:OnInitialize()
@@ -301,6 +302,7 @@ function Vect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 			if (not isPlayer and not libDRData:IsPVE(drCat)) then
 				return
 			end
+			
 			Vect:DRDebuffFaded(spellID, dstGUID, isPlayer);
 		end
 	end

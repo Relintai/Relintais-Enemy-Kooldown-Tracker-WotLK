@@ -339,3 +339,12 @@ function Vect:UpdateDRs(unitGUID)
 	end
 	return found;
 end
+
+function Vect:HideSelfDRFrames()
+	if not Vect.frames["selfdr"][1] then return end;
+
+	for i = 1, 18 do
+		local frame = Vect.frames["selfdr"][i]["frame"];
+		frame:Hide();
+	end
+end
