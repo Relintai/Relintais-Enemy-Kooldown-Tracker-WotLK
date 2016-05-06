@@ -1,7 +1,8 @@
 
 --TODOS:
---Player Entering World -> cleanup the db
 --DR timers
+--Way to show pet cds on the master
+--Mark movable frames to know which is which
 
 --"Globals"
 local aceDB = LibStub("AceDB-3.0")
@@ -144,7 +145,16 @@ function Vect:PLAYER_FOCUS_CHANGED()
 end
 
 function Vect:PLAYER_ENTERING_WORLD()
-	--TODO clean up the db
+	--DB cleanup
+	local t = GetTime();
+	for k, v in pairs(Vect.cds) do
+		for i, j in pairs(v) do
+			if j[2] < t then
+				--self:Print(Vect.cds[k][i][4]);
+				Vect.cds[k][i] = nil;
+			end
+		end
+	end
 end
 
 function Vect:ZONE_CHANGED_NEW_AREA()
