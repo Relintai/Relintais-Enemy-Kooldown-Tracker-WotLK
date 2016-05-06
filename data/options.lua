@@ -72,6 +72,18 @@ function Vect:SetDRPartEnabledOrDisabled(which, enable)
 	end
 end
 
+function Vect:isSpecDetectionEnabled()
+	local db = Vect.db.profile;
+	return db["specdetection"];
+end
+
+function Vect:setSpecDetectionEnabledorDisabled(enable)
+	local db = Vect.db.profile;
+	db["specdetection"] = enable;
+	--call the remapcooldowns, and then update
+	--self:ReassignCds(which);
+end
+
 --lock
 function Vect:isLocked()
 	return Vect.db.profile["locked"];

@@ -38,6 +38,7 @@ Vect.defaults = {
 		spellAuraDebug = false,
 		allCDebug = false,
 		selfCDRegister = false,
+		specdetection = false,
 		target = {
 			enabled = true,
 			size = 27,

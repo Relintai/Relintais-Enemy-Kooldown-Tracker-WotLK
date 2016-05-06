@@ -141,6 +141,16 @@ function Vect:getTargetandFocusOptions()
 			set = function(_, v)
 				Vect:setSortOrder("focus", v);
 			end
+		},
+		globalHeader = {
+			type = "header", name = "Global settings", order = 20
+		},
+		specdetectiontoggle = {
+				type = "toggle", name = "Spec Detection", desc = "Enable/Disable Spec Detection", order = 21,
+				get = function() return Vect:isSpecDetectionEnabled() end,
+				set = function(_, v)
+					Vect:setSpecDetectionEnabledorDisabled(v);
+				end
 		}
 	}
 	return args;
