@@ -1,14 +1,13 @@
 
 --TODOS:
---Way to show pet cds on the master -> currently looks impossible
---dr cleanup (PLAYER ENTER WORLD)
---Option to show pet cds on possible master (eg spell lock on all locks)
---interrupts first option (or last or don't care), or better -> rank system v
---3 option -> interrupt, stun, gap closers, strong nukes, the user can select which is first
---mana gem, fap
---support for rows
+--Bug: have to check if dr is completed on adding it, also do the same with drs (reassign should update them too, because probably thats the cause for 
+--the comparer error, onupdate is called null out drs while its comparing)
 
---Message: ...nfig-3.0\AceConfigDialog-3.0\AceConfigDialog-3.0.lua:20: Cannot find a library instance of "AceGUI-3.0".
+--Option to show pet cds on possible master (eg spell lock on all locks)
+
+--document the db these will be needed:
+--silence, gapcloser, defensive, potion, nuke, anticc, cc, stun, disarm, cdreset, shield, uncategorized
+--db-> class, type, isPet 
 
 --"Globals"
 local aceDB = LibStub("AceDB-3.0");
@@ -52,7 +51,9 @@ Vect.defaults = {
 			xPos = 350,
 			yPos = 350,
 			growOrder = 2,
-			sortOrder = 5
+			sortOrder = 5,
+			colorframeenabled = true,
+			colorframesize = 4
 		},
 		focus = {
 			enabled = true,
@@ -60,7 +61,9 @@ Vect.defaults = {
 			xPos = 380,
 			yPos = 380,
 			growOrder = 2,
-			sortOrder = 5
+			sortOrder = 5,
+			colorframeenabled = true,
+			colorframesize = 4
 		},
 		targetdr = {
 			enabled = true,
@@ -91,6 +94,95 @@ Vect.defaults = {
 			sortOrder = 5,
 			drnumsize = 14,
 			drnumposition = 1
+		},
+		colors = {
+			["gapcloser"] = {
+				["a"] = 1,
+				["b"] = 0,
+				["g"] = 0.8117647058823529,
+				["r"] = 1,
+			},
+			["anticc"] = {
+				["a"] = 1,
+				["b"] = 0.796078431372549,
+				["g"] = 1,
+				["r"] = 0,
+			},
+			["disarm"] = {
+				["a"] = 1,
+				["b"] = 0.9647058823529412,
+				["g"] = 1,
+				["r"] = 0,
+			},
+			["defensive"] = {
+				["a"] = 1,
+				["b"] = 0.08627450980392157,
+				["g"] = 1,
+				["r"] = 0.2,
+			},
+			["nuke"] = {
+				["a"] = 1,
+				["b"] = 0,
+				["g"] = 0,
+				["r"] = 1,
+			},
+			["shield"] = {
+				["a"] = 1,
+				["b"] = 0.3333333333333333,
+				["g"] = 1,
+				["r"] = 0.8901960784313725,
+			},
+			["potion"] = {
+				["a"] = 1,
+				["b"] = 0.6313725490196078,
+				["g"] = 0.7372549019607844,
+				["r"] = 1,
+			},
+			["cdreset"] = {
+				["a"] = 1,
+				["b"] = 1,
+				["g"] = 0,
+				["r"] = 0.6274509803921569,
+			},
+			["silence"] = {
+				["a"] = 1,
+				["b"] = 1,
+				["g"] = 0.03529411764705882,
+				["r"] = 0.1882352941176471,
+			},
+			["stun"] = {
+				["a"] = 1,
+				["b"] = 1,
+				["g"] = 0.07450980392156863,
+				["r"] = 0.9137254901960784,
+			},
+			["uncategorized"] = {
+				["a"] = 1,
+				["b"] = 1,
+				["g"] = 0.9058823529411765,
+				["r"] = 0.9607843137254902,
+			},
+			["cc"] = {
+				["a"] = 1,
+				["b"] = 0.3686274509803922,
+				["g"] = 0.3568627450980392,
+				["r"] = 0.3764705882352941,
+			},
+		},
+		cdtypesortorder = {
+			enabled = true,
+			silence = 1,
+			gapcloser = 2,
+			defensive = 3,
+			potion = 4,
+			nuke = 5,
+			anticc = 6,
+			cc = 7,
+			stun = 8,
+			disarm = 9,
+			cdreset = 10,
+			shield = 11,
+			uncategorized = 12
 		}
    }
 }
@@ -250,6 +342,7 @@ function Vect:PLAYER_ENTERING_WORLD()
 			end
 		end
 	end
+	Vect.drs = {}
 end
 
 function Vect:ZONE_CHANGED_NEW_AREA()

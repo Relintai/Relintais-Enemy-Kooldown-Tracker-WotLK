@@ -52,6 +52,8 @@ function Vect:SetPartEnabledOrDisabled(which, enable)
 		for i = 1, 23 do
 			local frame = Vect.frames[which][i]["frame"];
 			frame:Hide();
+			local colorframe = Vect.fremes[which][i]["colorframe"];
+			colorframe:Hide();
 		end
 	else
 		self:ReassignCds(which);
@@ -82,6 +84,38 @@ function Vect:setSpecDetectionEnabledorDisabled(enable)
 	db["specdetection"] = enable;
 	--call the remapcooldowns, and then update
 	--self:ReassignCds(which);
+end
+
+function Vect:getColorFrameEnabled(which)
+	local db = Vect.db.profile;
+	return db[which]["colorframeenabled"];
+end
+
+function Vect:setColorFrameEnabled(which, enable)
+	local db = Vect.db.profile;
+	db[which]["colorframeenabled"] = enable;
+	--hide all those frames
+	if not enable then
+		for i = 1, 23 do
+			local colorframe = Vect.frames[which][i]["colorframe"];
+			colorframe:Hide();
+		end
+	else
+		self:ReassignCds(which);
+	end
+end
+
+function Vect:getCDTypeSortingEnable()
+	local db = Vect.db.profile;
+	return db["cdtypesortorder"]["enabled"];
+end
+
+function Vect:setCDTypeSortingEnable(v)
+	local db = Vect.db.profile;
+	db["cdtypesortorder"]["enabled"] = v;
+	
+	self:ReassignCds("target");
+	self:ReassignCds("focus");
 end
 
 --lock
@@ -219,8 +253,25 @@ end
 
 function Vect:setDRNumSize(which, size)
 	local db = Vect.db.profile;
-	db[which]["drnumsize"] = size;
+	db[which]["size"] = size;
 	Vect:MoveDRTimersStop(which)
+end
+
+function Vect:getColorFrameSize(which)
+	local db = Vect.db.profile;
+	return db[which]["colorframesize"];
+end
+
+function Vect:setColorFrameSize(which, size)
+	local db = Vect.db.profile;
+	db[which]["colorframesize"] = size;
+	
+	Vect:MoveTimersStop(which);
+	Vect:ReassignCds(which);
+	
+	if not db["locked"] then
+		Vect:ShowMovableFrames();
+	end
 end
 
 --Grow Order
@@ -253,6 +304,18 @@ function Vect:setSortOrder(which, v)
 	Vect:ReassignCds(which);
 end
 
+function Vect:getTypeSortOrder(which)
+	local db = Vect.db.profile;
+	return db["cdtypesortorder"][which];
+end
+
+function Vect:setTypeSortOrder(which, v)
+	local db = Vect.db.profile;
+	db["cdtypesortorder"][which] = v;
+	Vect:ReassignCds("target");
+	Vect:ReassignCds("focus");
+end
+
 --Num Position functions
 function Vect:getDRNumPosition(which)
 	local db = Vect.db.profile;
@@ -263,6 +326,34 @@ function Vect:setDRNumPosition(which, v)
 	local db = Vect.db.profile;
 	db[which]["drnumposition"] = v;
 	Vect:MoveDRTimersStop(which);
+end
+
+--Color options
+function Vect:getColor(part)
+	local db = Vect.db.profile;
+	
+	if not db["color"] then db["color"] = {} end
+	
+	if not db["color"][part] then 
+		db["color"][part] = {};
+		db["color"][part]["r"] = 1;
+		db["color"][part]["g"] = 0;
+		db["color"][part]["b"] = 0;
+		db["color"][part]["a"] = 1;
+	end
+	
+	return db["color"][part]["r"], db["color"][part]["g"], db["color"][part]["b"], db["color"][part]["a"];
+end
+
+function Vect:setColor(part, r, g, b, a)
+	local db = Vect.db.profile;
+	
+	if not db["color"][part] then db["color"][part] = {} end
+	
+	db["color"][part]["r"] = r;
+	db["color"][part]["g"] = g;
+	db["color"][part]["b"] = b;
+	db["color"][part]["a"] = a;
 end
 
 --Debug settings

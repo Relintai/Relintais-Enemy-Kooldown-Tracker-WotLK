@@ -15,6 +15,8 @@ function Vect:ReassignCds(which)
 	for i = 1, 23 do
 		local frame = Vect.frames[which][i]["frame"];
 		frame:Hide();
+		local colorframe = Vect.frames[which][i]["colorframe"];
+		colorframe:Hide();
 	end
 	--check if frames are unlocked
 	if not db["locked"] then return end;
@@ -22,6 +24,8 @@ function Vect:ReassignCds(which)
 	if not db["selfCDRegister"] and self.targets[which] == UnitGUID("player") then return end;
 	--check if we have cooldown for that unit
 	if not self.cds[self.targets[which]] then return end;
+	--update cds
+	Vect:UpdateCds(which);
 	--sort them
 	local tmp = Vect:SortCDs(which);
 	--let's fill them up
@@ -33,6 +37,15 @@ function Vect:ReassignCds(which)
 		local CoolDown = Vect.frames[which][i]["cooldown"];
 		CoolDown:SetCooldown(v["currentTime"], v["cd"]);
 		frame:Show();
+		if (db[which]["colorframeenabled"]) then
+			local colorframe = Vect.frames[which][i]["colorframe"];
+			--self:Print(v["spellID"] .. " cat: " .. v["spellCategory"]);
+			colorframe:SetBackdropColor(db["color"][v["spellCategory"]]["r"], 
+					db["color"][v["spellCategory"]]["g"], 
+					db["color"][v["spellCategory"]]["b"], 
+					db["color"][v["spellCategory"]]["a"]);
+			colorframe:Show();
+		end
 		i = i + 1;
 	end
 end
@@ -54,7 +67,7 @@ function Vect:AddCd(srcGUID, spellID)
 	end
 	
 	local spec = Vect.cds[srcGUID]["spec"];
-	local cd, reset = Vect.spells[spellID][spec], Vect.spells[spellID][2];
+	local cd, reset, spellCategory = Vect.spells[spellID][spec], Vect.spells[spellID][2], Vect.spells[spellID][8];
 	
 	if specchange and (not cd) then
 		if self.targets["target"] == srcGUID then
@@ -77,7 +90,8 @@ function Vect:AddCd(srcGUID, spellID)
 		endTime,
 		cd,
 		spellIcon,
-		spellID
+		spellID,
+		spellCategory
 	}
 	
 	--self:Print(Vect.cds[srcGUID][spellID][1] .. " " .. Vect.cds[srcGUID][spellID][2] .. " " .. Vect.cds[srcGUID][spellID][3]);
@@ -146,7 +160,8 @@ function Vect:SortCDs(which)
 				endTime = v[2],
 				cd = v[3],
 				spellIcon = v[4],
-				spellID = v[5]
+				spellID = v[5],
+				spellCategory = v[6]
 				};
 				
 			--self:Print(v[1] .. v[2] .. v[3] .. v[4] .. v[5])
@@ -157,20 +172,36 @@ function Vect:SortCDs(which)
 
 	if not tmp then return end;
 	
-	if db[which]["sortOrder"] == "1" then --["1"] = "Ascending (CD left)",
-		table.sort(tmp, function(a, b) return Vect:ComparerAscendingCDLeft(a, b) end);
-	elseif db[which]["sortOrder"] == "2" then --["2"] = "Descending (CD left)",
-		table.sort(tmp, function(a, b) return Vect:ComparerDescendingCDLeft(a, b) end);
-	elseif db[which]["sortOrder"] == "3" then --["3"] = "Ascending (CD total)",
-		table.sort(tmp, function(a, b) return Vect:ComparerAscendingCDTotal(a, b) end);
-	elseif db[which]["sortOrder"] == "4" then --["4"] = "Descending (CD total)",
-		table.sort(tmp, function(a, b) return Vect:ComparerDescendingCDTotal(a, b) end);
-	elseif db[which]["sortOrder"] == "5" then --["5"] = "Recent first",
-		table.sort(tmp, function(a, b) return Vect:ComparerRecentFirst(a, b) end);
-	elseif db[which]["sortOrder"] == "6" then --["6"] = "Recent Last",
-		table.sort(tmp, function(a, b) return Vect:ComparerRecentLast(a, b) end);
+	if not db["cdtypesortorder"]["enabled"] then
+		if db[which]["sortOrder"] == "1" then --["1"] = "Ascending (CD left)",
+			table.sort(tmp, function(a, b) return Vect:ComparerAscendingCDLeft(a, b) end);
+		elseif db[which]["sortOrder"] == "2" then --["2"] = "Descending (CD left)",
+			table.sort(tmp, function(a, b) return Vect:ComparerDescendingCDLeft(a, b) end);
+		elseif db[which]["sortOrder"] == "3" then --["3"] = "Ascending (CD total)",
+			table.sort(tmp, function(a, b) return Vect:ComparerAscendingCDTotal(a, b) end);
+		elseif db[which]["sortOrder"] == "4" then --["4"] = "Descending (CD total)",
+			table.sort(tmp, function(a, b) return Vect:ComparerDescendingCDTotal(a, b) end);
+		elseif db[which]["sortOrder"] == "5" then --["5"] = "Recent first",
+			table.sort(tmp, function(a, b) return Vect:ComparerRecentFirst(a, b) end);
+		elseif db[which]["sortOrder"] == "6" then --["6"] = "Recent Last",
+			table.sort(tmp, function(a, b) return Vect:ComparerRecentLast(a, b) end);
+		end --["7"] = "No order"
+	else
+		if db[which]["sortOrder"] == "1" then --["1"] = "Ascending (CD left)",
+			table.sort(tmp, function(a, b) return Vect:ComparerAscendingCDLeftT(a, b) end);
+		elseif db[which]["sortOrder"] == "2" then --["2"] = "Descending (CD left)",
+			table.sort(tmp, function(a, b) return Vect:ComparerDescendingCDLeftT(a, b) end);
+		elseif db[which]["sortOrder"] == "3" then --["3"] = "Ascending (CD total)",
+			table.sort(tmp, function(a, b) return Vect:ComparerAscendingCDTotalT(a, b) end);
+		elseif db[which]["sortOrder"] == "4" then --["4"] = "Descending (CD total)",
+			table.sort(tmp, function(a, b) return Vect:ComparerDescendingCDTotalT(a, b) end);
+		elseif db[which]["sortOrder"] == "5" then --["5"] = "Recent first",
+			table.sort(tmp, function(a, b) return Vect:ComparerRecentFirstT(a, b) end);
+		elseif db[which]["sortOrder"] == "6" then --["6"] = "Recent Last",
+			table.sort(tmp, function(a, b) return Vect:ComparerRecentLastT(a, b) end);
+		end --["7"] = "No order"
 	end
-	--["7"] = "No order"
+	
 	return tmp;
 end
 
@@ -191,10 +222,24 @@ function Vect:CreateFrames(which)
 		CoolDown:SetAllPoints()
 		CoolDown:SetCooldown(GetTime(), 50);
 		frame:Hide();
+		
+		local colorframe = CreateFrame("Frame", nil, UIParent, nil);
+		colorframe:SetFrameStrata("BACKGROUND");
+		colorframe:SetWidth(150);
+		colorframe:SetHeight(150);
+		colorframe:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
+					--edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
+					edgeFile = nil,
+					tile = true, tileSize = 16, edgeSize = 0, 
+					--insets = { left = 4, right = 4, top = 4, bottom = 4 }});
+					insets = nil});
+		colorframe:Hide();
+		
 		Vect.frames[which][i] = {}
 		Vect.frames[which][i]["frame"] = frame;
 		Vect.frames[which][i]["texture"] = text;
 		Vect.frames[which][i]["cooldown"] = CoolDown;
+		Vect.frames[which][i]["colorframe"] = colorframe;
 	end
 end
 
@@ -204,6 +249,7 @@ function Vect:MoveTimersStop(which)
 	local y = db[which]["yPos"];
 	local size = db[which]["size"];
 	local growOrder = db[which]["growOrder"];
+	local cdbacksize = db[which]["colorframesize"];
 	
 	for i = 1, 23 do
 		local frame = Vect.frames[which][i]["frame"];
@@ -214,15 +260,37 @@ function Vect:MoveTimersStop(which)
 		local text = Vect.frames[which][i]["texture"];
 		text:SetAllPoints(frame);
 		frame.texture = text;
+		
+		local colorframe = Vect.frames[which][i]["colorframe"];
+		colorframe:ClearAllPoints();
+		colorframe:SetFrameStrata("BACKGROUND");
+		colorframe:SetBackdropColor(1, 1, 1, 1);
+		
 		--set them based on the grow type
 		if growOrder == "1" then --Up
 			frame:SetPoint("BOTTOMLEFT", x, y + ((i - 1) * size));
+			
+			colorframe:SetWidth(size + (2 * cdbacksize));
+			colorframe:SetHeight(size);
+			colorframe:SetPoint("BOTTOMLEFT", x - cdbacksize, y + ((i - 1) * size));
 		elseif growOrder == "2" then --Right
 			frame:SetPoint("BOTTOMLEFT", x + ((i - 1) * size), y);
+			
+			colorframe:SetWidth(size);
+			colorframe:SetHeight(size + (2 * cdbacksize));
+			colorframe:SetPoint("BOTTOMLEFT", x + ((i - 1) * size), y - cdbacksize);
 		elseif growOrder == "3" then --Down
 			frame:SetPoint("BOTTOMLEFT", x, y - ((i - 1) * size));
+			
+			colorframe:SetWidth(size + (2 * cdbacksize));
+			colorframe:SetHeight(size);
+			colorframe:SetPoint("BOTTOMLEFT", x - cdbacksize, (y - ((i - 1) * size)));
 		else --Left
 			frame:SetPoint("BOTTOMLEFT", x - ((i - 1) * size), y);
+			
+			colorframe:SetWidth(size);
+			colorframe:SetHeight(size + (2 * cdbacksize));
+			colorframe:SetPoint("BOTTOMLEFT", x - ((i - 1) * size), y - cdbacksize);
 		end
 		local CoolDown = Vect.frames[which][i]["cooldown"];
 		CoolDown:SetAllPoints();
@@ -231,19 +299,27 @@ function Vect:MoveTimersStop(which)
 end
 
 function Vect:VOnTimerUpdate(which)
+	if (Vect:UpdateCds(which)) then
+		--we have to update both, because if somebody is targeted and focused since sorting is 
+		--implemented it triggers only one update, probably it had bugs before too, but got unnoticed
+		self:ReassignCds("target");
+		self:ReassignCds("focus");
+	end
+end
+
+function Vect:UpdateCds(which)
 	--check if we have cooldown for that unit
 	if not self.cds[self.targets[which]] then return end
 	local t = GetTime();
+	local found = false;
 	--let's check if one of the cooldowns finished
 	for k, v in pairs(self.cds[self.targets[which]]) do
 		if not (k == "spec") then
 			if v[2] <= t then
 				self.cds[self.targets[which]][v[5]] = nil;
-				--we have to update both, because if somebody is targeted and focused since sorting is 
-				--implemented it triggers only one update, probably it had bugs before too, but got unnoticed
-				self:ReassignCds("target");
-				self:ReassignCds("focus");
+				found = true;
 			end
 		end
 	end
+	return found;
 end

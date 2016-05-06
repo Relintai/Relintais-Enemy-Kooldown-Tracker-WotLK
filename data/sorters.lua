@@ -1,13 +1,6 @@
 
---	table.sort(tmp, function(a, b) if db.growUp then return self:C_RemainingComparer(a, b) else return self:C_ReversalRemainingComparer(a, b) end end)
-
---function Aesa:C_RemainingComparer(a, b)
---	return b.remaining < a.remaining
---end
-
 --["1"] = "Ascending (CD left)",
 function Vect:ComparerAscendingCDLeft(a, b)
-	local time = GetTime();
 	if a.endTime < b.endTime then
 		return true;
 	else
@@ -17,7 +10,6 @@ end
 
 --["2"] = "Descending (CD left)",
 function Vect:ComparerDescendingCDLeft(a, b)
-	local time = GetTime();
 	if a.endTime < b.endTime then
 		return false;
 	else
@@ -58,5 +50,109 @@ function Vect:ComparerRecentLast(a, b)
 		return true;
 	else
 		return false;
+	end
+end
+
+--CD Type sorters
+
+--["1"] = "Ascending (CD left)",
+function Vect:ComparerAscendingCDLeftT(a, b)
+	local db = Vect.db.profile;
+
+	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
+		return true;
+	elseif (db["cdtypesortorder"][a.spellCategory] > db["cdtypesortorder"][b.spellCategory]) then
+		return false
+	else -- they are ==
+		if a.endTime < b.endTime then
+			return true;
+		else
+			return false;
+		end
+	end
+end
+
+--["2"] = "Descending (CD left)",
+function Vect:ComparerDescendingCDLeftT(a, b)
+	local db = Vect.db.profile;
+
+	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
+		return true;
+	elseif (db["cdtypesortorder"][a.spellCategory] > db["cdtypesortorder"][b.spellCategory]) then
+		return false
+	else -- they are ==
+		if a.endTime < b.endTime then
+			return false;
+		else
+			return true;
+		end
+	end
+end
+
+--["3"] = "Ascending (CD total)",
+function Vect:ComparerAscendingCDTotalT(a, b)
+	local db = Vect.db.profile;
+
+	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
+		return true;
+	elseif (db["cdtypesortorder"][a.spellCategory] > db["cdtypesortorder"][b.spellCategory]) then
+		return false
+	else -- they are ==
+		if a.cd < b.cd then
+			return true;
+		else
+			return false;
+		end
+	end
+end
+
+--["4"] = "Descending (CD total)",
+function Vect:ComparerDescendingCDTotalT(a, b)
+	local db = Vect.db.profile;
+
+	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
+		return true;
+	elseif (db["cdtypesortorder"][a.spellCategory] > db["cdtypesortorder"][b.spellCategory]) then
+		return false
+	else -- they are ==
+		if a.cd < b.cd then
+			return false;
+		else
+			return true;
+		end
+	end
+end
+
+--["5"] = "Recent first",
+function Vect:ComparerRecentFirstT(a, b)
+	local db = Vect.db.profile;
+
+	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
+		return true;
+	elseif (db["cdtypesortorder"][a.spellCategory] > db["cdtypesortorder"][b.spellCategory]) then
+		return false
+	else -- they are ==
+		if a.currentTime < b.currentTime then
+			return false;
+		else
+			return true;
+		end
+	end
+end
+
+--["6"] = "Recent Last",
+function Vect:ComparerRecentLastT(a, b)
+	local db = Vect.db.profile;
+
+	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
+		return true;
+	elseif (db["cdtypesortorder"][a.spellCategory] > db["cdtypesortorder"][b.spellCategory]) then
+		return false
+	else -- they are ==
+		if a.currentTime < b.currentTime then
+			return true;
+		else
+			return false;
+		end
 	end
 end
