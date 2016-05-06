@@ -4,10 +4,11 @@
 --Way to show pet cds on the master -> currently looks impossible
 
 --"Globals"
-local aceDB = LibStub("AceDB-3.0")
-local aceCDialog = LibStub("AceConfigDialog-3.0")
-local aceConfig = LibStub("AceConfig-3.0")
-local libSharedMedia = LibStub("LibSharedMedia-3.0")
+local aceDB = LibStub("AceDB-3.0");
+local aceCDialog = LibStub("AceConfigDialog-3.0");
+local aceConfig = LibStub("AceConfig-3.0");
+local libSharedMedia = LibStub("LibSharedMedia-3.0");
+local libDRData = LibStub('DRData-1.0');
 
 Vect.MovableFrames = nil
 
@@ -17,10 +18,14 @@ Vect.targets = {
 }
 
 Vect.cds = {}
+Vect.drs = {}
 
 Vect.frames = {
 	["target"] = {},
-	["focus"] = {}
+	["focus"] = {},
+	["targetdr"] = {},
+	["focusdr"] = {},
+	["selfdr"] = {}
 }
 
 Vect.defaults = {
@@ -47,12 +52,37 @@ Vect.defaults = {
 			yPos = 380,
 			growOrder = 2,
 			sortOrder = 5
+		},
+		targetdr = {
+			enabled = true,
+			size = 27,
+			xPos = 380,
+			yPos = 380,
+			growOrder = 2,
+			sortOrder = 5
+		},
+		focusdr = {
+			enabled = true,
+			size = 27,
+			xPos = 380,
+			yPos = 380,
+			growOrder = 2,
+			sortOrder = 5
+		},
+		selfdr = {
+			enabled = true,
+			size = 27,
+			xPos = 380,
+			yPos = 380,
+			growOrder = 2,
+			sortOrder = 5
 		}
    }
 }
 
 function Vect:Reset()
    Vect.cds = {}
+   Vect.drs = {}
    Vect.target = {unitGUID = -1, timers = {}}
    Vect.focus = {unitGUID = -1, timers = {}}
 end
@@ -76,6 +106,9 @@ function Vect:OnEnable()
 	self:RegisterEvent("PLAYER_FOCUS_CHANGED")
 	self:CreateFrames("target");
 	self:CreateFrames("focus");
+	self:CreateDRFrames("targetdr");
+	self:CreateDRFrames("focusdr");
+	self:CreateDRFrames("selfdr");
 	self:ApplySettings();
 end
 
@@ -304,6 +337,35 @@ function Vect:CreateFrames(which)
 	end
 end
 
+function Vect:CreateDRFrames(which)
+	for i = 1, 18 do
+		local frame = CreateFrame("Frame", nil, UIParent, nil);
+		frame:SetFrameStrata("MEDIUM");
+		frame:SetWidth(150);
+		frame:SetHeight(150);
+		if i == 1 then
+			frame:SetScript("OnUpdate", function() self:VOnDRTimerUpdate(which) end)
+		end
+		local text = frame:CreateTexture();
+		text:SetTexture("Interface\\Icons\\Spell_Arcane_Blink")
+		text:SetAllPoints(frame);
+		frame.texture = text;
+		local CoolDown = CreateFrame("Cooldown", "VectCoolDown" .. i, frame);
+		CoolDown:SetAllPoints()
+		CoolDown:SetCooldown(GetTime(), 50);
+		local t = frame:CreateFontString(nil, "OVERLAY");
+		t:SetNonSpaceWrap(false);
+		t:SetPoint("CENTER", frame, "CENTER", 0, 0);
+		t:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE, MONOCHROME")
+		--frame:Hide();
+		Vect.frames[which][i] = {}
+		Vect.frames[which][i]["frame"] = frame;
+		Vect.frames[which][i]["texture"] = text;
+		Vect.frames[which][i]["cooldown"] = CoolDown;
+		Vect.frames[which][i]["text"] = t;
+	end
+end
+
 function Vect:MoveTimersStop(which)
 	local db = Vect.db.profile;
 	local x = db[which]["xPos"];
@@ -312,6 +374,38 @@ function Vect:MoveTimersStop(which)
 	local growOrder = db[which]["growOrder"];
 	
 	for i = 1, 23 do
+		local frame = Vect.frames[which][i]["frame"];
+		frame:ClearAllPoints();
+		frame:SetFrameStrata("MEDIUM");
+		frame:SetWidth(size);
+		frame:SetHeight(size);
+		local text = Vect.frames[which][i]["texture"];
+		text:SetAllPoints(frame);
+		frame.texture = text;
+		--set them based on the grow type
+		if growOrder == "1" then --Up
+			frame:SetPoint("BOTTOMLEFT", x, y + ((i - 1) * size));
+		elseif growOrder == "2" then --Right
+			frame:SetPoint("BOTTOMLEFT", x + ((i - 1) * size), y);
+		elseif growOrder == "3" then --Down
+			frame:SetPoint("BOTTOMLEFT", x, y - ((i - 1) * size));
+		else --Left
+			frame:SetPoint("BOTTOMLEFT", x - ((i - 1) * size), y);
+		end
+		local CoolDown = Vect.frames[which][i]["cooldown"];
+		CoolDown:SetAllPoints();
+		--frame:Show();
+	end
+end
+
+function Vect:MoveDRTimersStop(which)
+	local db = Vect.db.profile;
+	local x = db[which]["xPos"];
+	local y = db[which]["yPos"];
+	local size = db[which]["size"];
+	local growOrder = db[which]["growOrder"];
+	
+	for i = 1, 18 do
 		local frame = Vect.frames[which][i]["frame"];
 		frame:ClearAllPoints();
 		frame:SetFrameStrata("MEDIUM");
@@ -359,6 +453,10 @@ function Vect:VOnTimerUpdate(which)
 			self:ReassignCds("focus");
 		end
 	end
+end
+
+function Vect:VOnDRTimerUpdate(which)
+	--TODO
 end
 
 function Vect:VectDisable()
@@ -425,6 +523,20 @@ function Vect:SetPartEnabledOrDisabled(which, enable)
 	end
 end
 
+function Vect:SetDRPartEnabledOrDisabled(which, enable)
+	local db = Vect.db.profile;
+	db[which]["enabled"] = enable;
+	--hide all those frames
+	if not enable then
+		for i = 1, 18 do
+			local frame = Vect.frames[which][i]["frame"];
+			frame:Hide();
+		end
+	else
+		--self:ReassignCds(which);
+	end
+end
+
 --lock
 function Vect:isLocked()
 	return Vect.db.profile["locked"];
@@ -460,7 +572,7 @@ function Vect:ShowMovableFrames()
 	--Create them if they doesn't exists
 	if not Vect.MovableFrames then
 		Vect.MovableFrames = {}
-		for i = 1, 2 do
+		for i = 1, 5 do
 			local frame = CreateFrame("Frame", nil, UIParent, nil);
 			frame:SetFrameStrata("BACKGROUND");
 			frame:SetScript("OnDragStart", function() self:MovableFrameDragStart() end)
@@ -479,6 +591,12 @@ function Vect:ShowMovableFrames()
 				ttext = "T";
 			elseif i == 2 then
 				ttext = "F";
+			elseif i == 3 then
+				ttext = "TDR";
+			elseif i == 4 then
+				ttext = "FDR";
+			elseif i == 5 then
+				ttext = "SDR";
 			end
 			
 			t:SetText(ttext);
@@ -488,6 +606,12 @@ function Vect:ShowMovableFrames()
 				which = "target";
 			elseif i == 2 then
 				which = "focus";
+			elseif i == 3 then
+				which = "targetdr";
+			elseif i == 4 then
+				which = "focusdr";
+			elseif i == 5 then
+				which = "selfdr";
 			end
 			
 			frame.DragID = which;

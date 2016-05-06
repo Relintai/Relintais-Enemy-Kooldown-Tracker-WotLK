@@ -149,7 +149,103 @@ end
 --order 20-40
 function Vect:getDROptions()
 	local args = {
-
+		targetdrHeader = {
+			type = "header", name = "Target's DR settings", order = 10
+		},
+		targetdrtoggle = {
+			type = "toggle", name = "Enabled", desc = "Enable/Disable showing the target's DRs.", order = 11,
+			get = function() return Vect:isPartEnabled("targetdr") end,
+			set = function(_, v)
+				Vect:SetDRPartEnabledOrDisabled("targetdr", v);
+			end
+		},
+		targetdrrange = {
+			type = "range", name = "Target's DRs size", order = 12, min = 10, max = 150, step = 1,
+			get = function() return Vect:getFrameSize("targetdr") end,
+			set = function(_, v)
+				Vect:setFrameSize("targetdr", v);
+			end
+			
+		},
+		targetdrGrowSelect = {
+			type = "select", style = "dropdown", name = "targetDRGrow", 
+			desc = "Change which way the target's cooldowns will grow", order = 13, 
+			values = {
+				["1"] = "Up",
+				["2"] = "Right",
+				["3"] = "Down",
+				["4"] = "Left"
+			},
+			get = function() return Vect:getGrowOrder("targetdr") end,
+			set = function(_, v)
+				Vect:setGrowOrder("targetdr", v);
+			end
+		},
+		targetdrSortSelect = {
+			type = "select", style = "dropdown", name = "targetDRSortOrder", 
+			desc = "Change the target's DR's sort order", order = 14, 
+			values = {
+				["1"] = "Ascending (CD left)",
+				["2"] = "Descending (CD left)",
+				["3"] = "Ascending (CD total)",
+				["4"] = "Descending (CD total)",
+				["5"] = "Recent first",
+				["6"] = "Recent Last",
+				["7"] = "No order"
+			},
+			get = function() return Vect:getSortOrder("targetdr") end,
+			set = function(_, v)
+				Vect:setSortOrder("targetdr", v);
+			end
+		},
+		focusdrHeader = {
+			type = "header", name = "Focus's settings", order = 15
+		},
+		focusdrtoggle = {
+				type = "toggle", name = "Enabled", desc = "Enable/Disable showing the focus's DRs.", order = 16,
+				get = function() return Vect:isPartEnabled("focusdr") end,
+				set = function(_, v)
+					Vect:SetDRPartEnabledOrDisabled("focusdr", v);
+				end
+		},
+		focusdrRange = {
+				type = "range", name = "Focus's size", order = 17, min = 10, max = 150, step = 1,
+				get = function() return Vect:getFrameSize("focusdr") end,
+				set = function(_, v)
+					Vect:setFrameSize("focusdr", v);
+				end
+		},
+		focusdrGrowSelect = {
+			type = "select", style = "dropdown", name = "focusDRGrow", 
+			desc = "Change which way the focus's DRs will grow", order = 18, 
+			values = {
+				["1"] = "Up",
+				["2"] = "Right",
+				["3"] = "Down",
+				["4"] = "Left"
+			},
+			get = function() return Vect:getGrowOrder("focusdr") end,
+			set = function(_, v)
+				Vect:setGrowOrder("focusdr", v);
+			end
+		},
+		focusdrSortSelect = {
+			type = "select", style = "dropdown", name = "focusDRSortOrder", 
+			desc = "Change the focus's DR's sort order", order = 19, 
+			values = {
+				["1"] = "Ascending (CD left)",
+				["2"] = "Descending (CD left)",
+				["3"] = "Ascending (CD total)",
+				["4"] = "Descending (CD total)",
+				["5"] = "Recent first",
+				["6"] = "Recent Last",
+				["7"] = "No order"
+			},
+			get = function() return Vect:getSortOrder("focusdr") end,
+			set = function(_, v)
+				Vect:setSortOrder("focusdr", v);
+			end
+		}
 	}
 	return args;
 end
@@ -157,7 +253,51 @@ end
 --order 40-50
 function Vect:getSelfDROptions()
 	local args = {
-
+		selfdrtoggle = {
+			type = "toggle", name = "Enabled", desc = "Enable/Disable showing the your DRs.", order = 11,
+			get = function() return Vect:isPartEnabled("selfdr") end,
+			set = function(_, v)
+				Vect:SetDRPartEnabledOrDisabled("selfdr", v);
+			end
+		},
+		selfdrrange = {
+			type = "range", name = "Self's DRs size", order = 12, min = 10, max = 150, step = 1,
+			get = function() return Vect:getFrameSize("selfdr") end,
+			set = function(_, v)
+				Vect:setFrameSize("selfdr", v);
+			end
+		},
+		selfdrGrowSelect = {
+			type = "select", style = "dropdown", name = "selfDRGrow", 
+			desc = "Change which way the your DRs will grow", order = 13, 
+			values = {
+				["1"] = "Up",
+				["2"] = "Right",
+				["3"] = "Down",
+				["4"] = "Left"
+			},
+			get = function() return Vect:getGrowOrder("selfdr") end,
+			set = function(_, v)
+				Vect:setGrowOrder("selfdr", v);
+			end
+		},
+		selfdrSortSelect = {
+			type = "select", style = "dropdown", name = "selfDRSortOrder", 
+			desc = "Change the your DR's sort order", order = 14, 
+			values = {
+				["1"] = "Ascending (CD left)",
+				["2"] = "Descending (CD left)",
+				["3"] = "Ascending (CD total)",
+				["4"] = "Descending (CD total)",
+				["5"] = "Recent first",
+				["6"] = "Recent Last",
+				["7"] = "No order"
+			},
+			get = function() return Vect:getSortOrder("selfdr") end,
+			set = function(_, v)
+				Vect:setSortOrder("selfdr", v);
+			end
+		},
 	}
 	return args;
 end
