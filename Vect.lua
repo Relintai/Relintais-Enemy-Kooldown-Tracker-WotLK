@@ -1,11 +1,7 @@
 
 --TODOS:
---DR timers
---fix config for drs, add in displaying the number of drs, add in a config -> where to show them uncomment enableds
---fix libdrdata, its dr groups are bad
 --spec detection
 --Way to show pet cds on the master -> currently looks impossible
---add every version for arcane torrent (BE racial)
 
 --"Globals"
 local aceDB = LibStub("AceDB-3.0");

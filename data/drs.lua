@@ -63,7 +63,7 @@ end
 
 function Vect:DRDebuffFaded(spellID, dstGUID, isPlayer)
 	local db =  Vect.db.profile;
-	--if not db["enabled"] then return end;
+	if not db["enabled"] then return end;
 
 	if not Vect.drs[dstGUID] then 
 		 Vect.drs[dstGUID] = {}
@@ -116,7 +116,7 @@ end
 function Vect:ReassignDRs(which)
 	local db =  Vect.db.profile;
 	--bail out early, if frames are disabled
-	--if not db[which]["enabled"] or not db["enabled"] then return end;
+	if not db[which]["enabled"] or not db["enabled"] then return end;
 	--first hide all
 	for i = 1, 18 do
 		local frame = Vect.frames[which][i]["frame"];
