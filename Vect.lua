@@ -1,9 +1,7 @@
 
 --TODOS:
 --Player Entering World -> cleanup the db
---Chat Command
 --DR timers
---Arcane Power?!
 
 --"Globals"
 local aceDB = LibStub("AceDB-3.0")
@@ -64,7 +62,6 @@ function Vect:OnInitialize()
 	self.db.RegisterCallback(self, "OnProfileChanged", function() self:ApplySettings() end);
 	self.db.RegisterCallback(self, "OnProfileCopied", function() self:ApplySettings() end);
 	self.db.RegisterCallback(self, "OnProfileReset", function() self:ApplySettings() end);
-	self:Print(self.appName .. " v. " .. Vect.version .. ". Chat command is /vect");
 	aceConfig:RegisterOptionsTable("Vect", self:GetVectOptions());
 	aceCDialog:AddToBlizOptions("Vect");
 	self:RegisterChatCommand("vect", "ChatCommand");
@@ -94,7 +91,11 @@ end
 
 
 function Vect:ChatCommand(input)
-   --TODO
+	if not input or input:trim() == "" then
+		aceCDialog:Open("Vect");
+	else
+		LibStub("AceConfigCmd-3.0").HandleCommand(Vect, "vect", "Vect", input);
+	end
 end
 
 function Vect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcName, srcFlags, 
