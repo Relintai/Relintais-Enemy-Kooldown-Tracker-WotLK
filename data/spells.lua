@@ -504,6 +504,14 @@ Vect.spells = {
 	[59164] = {0, nil, 0, 0, 0, 3, "Warlock", "", false}, --Haunt r4
 	[18223] = {0, nil, 0, 0, 0, 3, "Warlock", "", false}, --Curse of Exhaustion
 	--Demonology
+	[23469] = {120, nil, 120, 120, 120, 0, "", "defensive", false}, --Healthstone r1
+	[23471] = {120, nil, 120, 120, 120, 0, "", "defensive", false}, --Healthstone r2
+	[23473] = {120, nil, 120, 120, 120, 0, "", "defensive", false}, --Healthstone r3
+	[23475] = {120, nil, 120, 120, 120, 0, "", "defensive", false}, --Healthstone r4
+	[23477] = {120, nil, 120, 120, 120, 0, "", "defensive", false}, --Healthstone r5
+	[27237] = {120, nil, 120, 120, 120, 0, "", "defensive", false}, --Healthstone r6
+	[47872] = {120, nil, 120, 120, 120, 0, "", "defensive", false}, --Healthstone r7
+	[47877] = {120, nil, 120, 120, 120, 0, "", "defensive", false}, --Healthstone r8
 	[54785] = {45, nil, 45, 45, 45, 4, "Warlock", "stun", false}, --Demon Charge
 	[48020] = {30, nil, 30, 30, 30, 0, "Warlock", "gapcloser", false}, --Demonic Circle: Teleport
 	[47193] = {42, nil, 42, 42, 42, 4, "Warlock", "nuke", false}, --Demonic Empowerment
