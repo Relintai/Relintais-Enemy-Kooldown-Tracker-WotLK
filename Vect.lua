@@ -1,8 +1,5 @@
 
 --TODOS:
---Bug: have to check if dr is completed on adding it, also do the same with drs (reassign should update them too, because probably thats the cause for 
---the comparer error, onupdate is called null out drs while its comparing)
-
 --Option to show pet cds on possible master (eg spell lock on all locks)
 
 --document the db these will be needed:

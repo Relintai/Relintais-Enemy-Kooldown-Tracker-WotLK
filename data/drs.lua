@@ -35,6 +35,7 @@ function Vect:DRDebuffGained(spellID, dstGUID, isPlayer)
 			drCat
 		}
 	else
+		Vect:UpdateDRs(dstGUID);
 		local cd = 18;
 		local currentTime = GetTime();
 		local endTime = currentTime + cd;
@@ -90,6 +91,7 @@ function Vect:DRDebuffFaded(spellID, dstGUID, isPlayer)
 			drCat
 		}
 	else
+		Vect:UpdateDRs(dstGUID);
 		local cd = 18;
 		local currentTime = GetTime();
 		local endTime = currentTime + cd;
@@ -135,6 +137,8 @@ function Vect:ReassignDRs(which)
 	end
 
 	if not self.drs[self.targets[whichs]] then return end;
+	--update then
+	Vect:UpdateDRs(self.targets[whichs]);
 	--sort them
 	local tmp = Vect:SortDRs(whichs);
 	--let's fill them up
@@ -303,35 +307,28 @@ function Vect:MoveDRTimersStop(which)
 	end
 end
 
-
-
 function Vect:VOnDRTimerUpdate(which)
-	--check if we have dr for that unit
-	if not self.drs[self.targets[which]] then return end
-	local t = GetTime();
-	--let's check if one of the cooldowns finished
-	for k, v in pairs(self.drs[self.targets[which]]) do
-		if v[7] == true and v[2] <= t then
-			self.drs[self.targets[which]][v[8]] = nil;
-			--we have to update every three, because if somebody is targeted and focused since sorting is 
-			--implemented it triggers only one update, probably it had bugs before too, but got unnoticed
-			self:ReassignDRs("targetdr");
-			self:ReassignDRs("focusdr");
-			self:ReassignDRs("selfdr");
-		end
+	if Vect:UpdateDRs(self.targets[which]) then
+		--we have to update every three, because if somebody is targeted and focused since sorting is 
+		--implemented it triggers only one update, probably it had bugs before too, but got unnoticed
+		self:ReassignDRs("targetdr");
+		self:ReassignDRs("focusdr");
+		self:ReassignDRs("selfdr");
 	end
 end
 
-function Vect:getDRNumXOffset(size, drNumSize, drNumPos)
-	local db = Vect.db.profile;
-
-
-	return 0;
-end
-
-function Vect:getDRNumYOffset(size, drNumSize, drNumPos)
-	local db = Vect.db.profile;
-
-	
-	return 0;
+function Vect:UpdateDRs(unitGUID)
+	if not unitGUID then return end;
+	--check if we have dr for that unit
+	if not self.drs[unitGUID] then return end
+	local t = GetTime();
+	local found = false;
+	--let's check if one of the cooldowns finished
+	for k, v in pairs(self.drs[unitGUID]) do
+		if v[7] == true and v[2] <= t then
+			self.drs[unitGUID][v[8]] = nil;
+			fount = true;
+		end
+	end
+	return found;
 end
