@@ -18,6 +18,8 @@ function Vect:DRDebuffGained(spellID, dstGUID, isPlayer)
 	local drCat = libDRData:GetSpellCategory(spellID);
 	local spellName, spellRank, spellIcon = GetSpellInfo(spellID);
 
+	Vect:UpdateDRs(dstGUID);
+	
 	if not Vect.drs[dstGUID][drCat] then
 		local cd = 18;
 		local currentTime = GetTime();
@@ -35,7 +37,6 @@ function Vect:DRDebuffGained(spellID, dstGUID, isPlayer)
 			drCat
 		}
 	else
-		Vect:UpdateDRs(dstGUID);
 		local cd = 18;
 		local currentTime = GetTime();
 		local endTime = currentTime + cd;
@@ -78,6 +79,8 @@ function Vect:DRDebuffFaded(spellID, dstGUID, isPlayer)
 	local drCat = libDRData:GetSpellCategory(spellID);
 	local spellName, spellRank, spellIcon = GetSpellInfo(spellID);
 
+	Vect:UpdateDRs(dstGUID);
+	
 	if not Vect.drs[dstGUID][drCat] then
 		--means we didn't see it applied
 		local cd = 18;
@@ -96,7 +99,6 @@ function Vect:DRDebuffFaded(spellID, dstGUID, isPlayer)
 			drCat
 		}
 	else
-		Vect:UpdateDRs(dstGUID);
 		local cd = 18;
 		local currentTime = GetTime();
 		local endTime = currentTime + cd;
