@@ -4,11 +4,12 @@
 ## Title: Vect
 ## Notes: Verot's Enemy Cooldown Tracker.
 ## DefaultState: Enabled
-## OptionalDeps: Ace3, LibSharedMedia-3.0
+## OptionalDeps: Ace3
 ## SavedVariables: VectDB
-## Version: 0.1
+## Version: 0.75
 
 embeds.xml
 data\global.lua
 data\spells.lua
+data\options.lua
 Vect.lua
