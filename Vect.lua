@@ -279,7 +279,6 @@ function Vect:SortCDs(which)
 	local db = Vect.db.profile;
 	local tmp = {};
 
-	
 	--make the tmp table
 	local i = 1;
 	for k, v in pairs(self.cds[self.targets[which]]) do
@@ -296,6 +295,8 @@ function Vect:SortCDs(which)
 		i = i + 1;
 	end
 
+	if not tmp then return end;
+	
 	if db[which]["sortOrder"] == "1" then --["1"] = "Ascending (CD left)",
 		table.sort(tmp, function(a, b) return Vect:ComparerAscendingCDLeft(a, b) end);
 	elseif db[which]["sortOrder"] == "2" then --["2"] = "Descending (CD left)",
