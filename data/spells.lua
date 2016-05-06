@@ -123,9 +123,20 @@ Vect.spells = {
 	[5599] = {180, nil, 180, 180, 180, 0, "Paladin", "defensive", false}, --Hand of Protection r2
 	[10278] = {180, nil, 180, 180, 180, 0, "Paladin", "defensive", false}, --Hand of Protection r3
 	[6940] = {120, nil, 120, 120, 120, 0, "Paladin", "defensive", false}, --Hand of Sacrifice
+	--Detection
+	[53595] = {0, nil, 0, 0, 0, 4, "Paladin", "", false}, --Hammer of the Righteous
+	[20925] = {0, nil, 0, 0, 0, 4, "Paladin", "", false}, --Holy Shield r1
+	[20927] = {0, nil, 0, 0, 0, 4, "Paladin", "", false}, --Holy Shield r2
+	[20928] = {0, nil, 0, 0, 0, 4, "Paladin", "", false}, --Holy Shield r3
+	[27179] = {0, nil, 0, 0, 0, 4, "Paladin", "", false}, --Holy Shield r4
+	[48951] = {0, nil, 0, 0, 0, 4, "Paladin", "", false}, --Holy Shield r5
+	[48952] = {0, nil, 0, 0, 0, 4, "Paladin", "", false}, --Holy Shield r6
 	--Retribution
 	[31884] = {120, nil, 180, 180, 120, 0, "Paladin", "nuke", false}, --Avenging Wrath
 	[20066] = {60, nil, 60, 60, 60, 5, "Paladin", "cc", false}, --Repentance
+	--Detection
+	[35395] = {0, nil, 0, 0, 0, 5, "Paladin", "", false}, --Crusader Strike
+	[53385] = {0, nil, 0, 0, 0, 5, "Paladin", "", false}, --Crusader Strike
 	
 	--Hunter
 	--Total: 15
