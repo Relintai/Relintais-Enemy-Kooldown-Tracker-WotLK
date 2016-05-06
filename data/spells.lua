@@ -14,9 +14,10 @@ Vect.spells = {
 	[28880] = {180, nil}, --Gift of the Naaru
 	--Warrior
 	--Total: 20
-	--TODO: charge r1,r2
 	--Arms
 	[46924] = {90, nil}, --BladeStrom
+	[100] = {15, nil}, --Charge rank 1
+	[6178] = {15, nil}, --Charge rank 2
 	[11578] = {15, nil}, --Charge rank 3
 	[57755] = {60, nil}, --Heroic Throw
 	[20230] = {240, nil}, --Retaliation
