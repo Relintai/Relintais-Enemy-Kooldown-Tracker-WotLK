@@ -354,12 +354,29 @@ end
 
 function Vect:VectDisable()
 	self:Reset();
+	self:ApplySettings();
+	--hide the frames
+	Vect:HideFrames();
 	--self:Disable();
 end
 
 function Vect:VectEnable()
+	--self:Enable();
 	self:Reset();
 	self:ApplySettings();
+end
+
+--global utility
+
+function Vect:HideFrames()
+	for i = 1, 23 do
+		local frame = self.frames["target"][i]["frame"];
+		frame:Hide();
+	end
+	for i = 1, 23 do
+		local frame = self.frames["focus"][i]["frame"];
+		frame:Hide();
+	end
 end
 
 --Utility Functions for the options
