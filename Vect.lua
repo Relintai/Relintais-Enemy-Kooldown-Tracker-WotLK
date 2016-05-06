@@ -1,9 +1,9 @@
 
 --TODOS:
 --Player Entering World -> cleanup the db
---CD Sort Order
 --Chat Command
 --DR timers
+--Arcane Power?!
 
 --"Globals"
 local aceDB = LibStub("AceDB-3.0")
@@ -171,15 +171,15 @@ function Vect:ReassignCds(which)
 	--check if we have cooldown for that unit
 	if not self.cds[self.targets[which]] then return end;
 	--sort them
-	Vect:SortCDs(which);
+	local tmp = Vect:SortCDs(which);
 	--let's fill them up
 	local i = 1;
-	for k, v in pairs(self.cds[self.targets[which]]) do
+	for k, v in ipairs(tmp) do
 		local frame = Vect.frames[which][i]["frame"];
 		local text = Vect.frames[which][i]["texture"];
-		text:SetTexture(v[4]);
+		text:SetTexture(v["spellIcon"]);
 		local CoolDown = Vect.frames[which][i]["cooldown"];
-		CoolDown:SetCooldown(v[1], v[3]);
+		CoolDown:SetCooldown(v["currentTime"], v["cd"]);
 		frame:Show();
 		i = i + 1;
 	end
@@ -233,7 +233,41 @@ function Vect:CdRemoval(srcGUID, resetArray)
 end
 
 function Vect:SortCDs(which)
-	--TODO
+	local db = Vect.db.profile;
+	local tmp = {};
+
+	
+	--make the tmp table
+	local i = 1;
+	for k, v in pairs(self.cds[self.targets[which]]) do
+		tmp[i] = {
+			currentTime = v[1],
+			endTime = v[2],
+			cd = v[3],
+			spellIcon = v[4],
+			spellID = v[5]
+			};
+			
+		--self:Print(v[1] .. v[2] .. v[3] .. v[4] .. v[5])
+		--self:Print(tmp[i]["currentTime"] .. " " .. tmp[i]["endTime"] .. " " .. tmp[i]["cd"] .. " " .. tmp[i][4] .. " " .. tmp[i][5])
+		i = i + 1;
+	end
+
+	if db[which]["sortOrder"] == "1" then --["1"] = "Ascending (CD left)",
+		table.sort(tmp, function(a, b) return Vect:ComparerAscendingCDLeft(a, b) end);
+	elseif db[which]["sortOrder"] == "2" then --["2"] = "Descending (CD left)",
+		table.sort(tmp, function(a, b) return Vect:ComparerDescendingCDLeft(a, b) end);
+	elseif db[which]["sortOrder"] == "3" then --["3"] = "Ascending (CD total)",
+		table.sort(tmp, function(a, b) return Vect:ComparerAscendingCDTotal(a, b) end);
+	elseif db[which]["sortOrder"] == "4" then --["4"] = "Descending (CD total)",
+		table.sort(tmp, function(a, b) return Vect:ComparerDescendingCDTotal(a, b) end);
+	elseif db[which]["sortOrder"] == "5" then --["5"] = "Recent first",
+		table.sort(tmp, function(a, b) return Vect:ComparerRecentFirst(a, b) end);
+	elseif db[which]["sortOrder"] == "6" then --["6"] = "Recent Last",
+		table.sort(tmp, function(a, b) return Vect:ComparerRecentLast(a, b) end);
+	end
+	--["7"] = "No order"
+	return tmp;
 end
 
 function Vect:CreateFrames(which)
@@ -304,11 +338,15 @@ end
 function Vect:VOnTimerUpdate(which)
 	--check if we have cooldown for that unit
 	if not self.cds[self.targets[which]] then return end
+	local t = GetTime();
 	--let's check if one of the cooldowns finished
 	for k, v in pairs(self.cds[self.targets[which]]) do
-		if v[2] <= GetTime() then
+		if v[2] <= t then
 			self.cds[self.targets[which]][v[5]] = nil;
-			self:ReassignCds(which);
+			--we have to update both, because if somebody is targeted and focused since sorting is 
+			--implemented it triggers only one update, probably it had bugs before too, but got unnoticed
+			self:ReassignCds("target");
+			self:ReassignCds("focus");
 		end
 	end
 end

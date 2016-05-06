@@ -12,4 +12,5 @@ embeds.xml
 data\global.lua
 data\spells.lua
 data\options.lua
+data\sorters.lua
 Vect.lua

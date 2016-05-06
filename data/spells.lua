@@ -272,6 +272,7 @@ Vect.spells = {
 	--Total: 18
 	--Freeze triggers combatlog event
 	--Arcane
+	[12042] = {85, nil}, --Arcane Power
 	[1953] = {15, nil}, --Blink
 	[2139] = {24, nil}, --Counterspell
 	[12051] = {120, nil}, --Evocation

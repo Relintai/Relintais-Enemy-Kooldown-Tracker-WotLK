@@ -81,11 +81,13 @@ function Vect:getTargetandFocusOptions()
 			type = "select", style = "dropdown", name = "targetSortOrder", 
 			desc = "Change the target's cooldowns's sort order", order = 14, 
 			values = {
-				["1"] = "Ascending",
-				["2"] = "Descending",
-				["3"] = "Recent first",
-				["4"] = "Recent Last",
-				["5"] = "Random"
+				["1"] = "Ascending (CD left)",
+				["2"] = "Descending (CD left)",
+				["3"] = "Ascending (CD total)",
+				["4"] = "Descending (CD total)",
+				["5"] = "Recent first",
+				["6"] = "Recent Last",
+				["7"] = "No order"
 			},
 			get = function() return Vect:getSortOrder("target") end,
 			set = function(_, v)
@@ -127,11 +129,13 @@ function Vect:getTargetandFocusOptions()
 			type = "select", style = "dropdown", name = "focusSortOrder", 
 			desc = "Change the focus's cooldowns's sort order", order = 19, 
 			values = {
-				["1"] = "Ascending",
-				["2"] = "Descending",
-				["3"] = "Recent first",
-				["4"] = "Recent Last",
-				["5"] = "Random"
+				["1"] = "Ascending (CD left)",
+				["2"] = "Descending (CD left)",
+				["3"] = "Ascending (CD total)",
+				["4"] = "Descending (CD total)",
+				["5"] = "Recent first",
+				["6"] = "Recent Last",
+				["7"] = "No order"
 			},
 			get = function() return Vect:getSortOrder("focus") end,
 			set = function(_, v)
