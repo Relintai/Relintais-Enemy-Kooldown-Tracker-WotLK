@@ -161,29 +161,36 @@ end
 function Vect:getDebugOptions()
 	local args = {
 		spellcast = {
-				type = "toggle", name = "SpellCast", desc = "Enable/Disable writing out SPELL_CAST_SUCCESS events.", order = 50,
-				get = function() return Vect:getSpellCastDebug() end,
-				set = function(_, v)
-					Vect:setSpellCastDebug(v);
-				end
+			type = "toggle", name = "SpellCast", desc = "Enable/Disable writing out SPELL_CAST_SUCCESS events.", order = 50,
+			get = function() return Vect:getSpellCastDebug() end,
+			set = function(_, v)
+				Vect:setSpellCastDebug(v);
+			end
 		},
 		spellAura = {
-				type = "toggle", name = "SpellAura", desc = "Enable/Disablewriting out SPLL_AURA_* events", order = 51,
-				get = function() return Vect:getSpellAuraDebug() end,
-				set = function(_, v)
-					Vect:setSpellAuraDebug(v);
-				end
+			type = "toggle", name = "SpellAura", desc = "Enable/Disablewriting out SPLL_AURA_* events", order = 51,
+			get = function() return Vect:getSpellAuraDebug() end,
+			set = function(_, v)
+				Vect:setSpellAuraDebug(v);
+			end
 		},
 		allLog = {
-				type = "toggle", name = "Uber debug", desc = "Enable/Disable writing out all combatlog events", order = 52,
-				get = function() return Vect:getAllCDebug() end,
-				set = function(_, v)
-					Vect:setAllCDebug(v);
-				end
+			type = "toggle", name = "Uber debug", desc = "Enable/Disable writing out all combatlog events", order = 52,
+			get = function() return Vect:getAllCDebug() end,
+			set = function(_, v)
+				Vect:setAllCDebug(v);
+			end
+		},
+		selfcd = {
+			type = "toggle", name = "Self CDs", desc = "Enable/Disable registering self CDs", order = 53,
+			get = function() return Vect:getSelfCDRegister() end,
+			set = function(_, v)
+				Vect:setSelfCDRegister(v);
+			end
 		},
 		debugselect = {
 			type = "select", style = "dropdown", name = "debuglevel", 
-			desc = "Change the debuglevel", order = 53, 
+			desc = "Change the debuglevel", order = 54, 
 			values = {
 				["0"] = "No Messages",
 			},

@@ -5,8 +5,6 @@
 --CD Sort Order
 
 --"Globals"
-local ALLOCATE_FRAME_NUM = 5;
-
 local aceDB = LibStub("AceDB-3.0")
 local aceCDialog = LibStub("AceConfigDialog-3.0")
 local aceConfig = LibStub("AceConfig-3.0")
@@ -34,6 +32,7 @@ Vect.defaults = {
 		spellCastDebug = false,
 		spellAuraDebug = false,
 		allCDebug = false,
+		selfCDRegister = false,
 		target = {
 			enabled = true,
 			size = 27,
@@ -155,8 +154,11 @@ function Vect:ReassignCds(which)
 		local frame = Vect.frames[which][i]["frame"];
 		frame:Hide();
 	end
+	local db =  Vect.db.profile;
 	--check if frames are unlocked
-	if not Vect.db.profile["locked"] then return end;
+	if not db["locked"] then return end;
+	--check if we need to display them for the player
+	if not db["selfCDRegister"] and self.targets[which] == UnitGUID("player") then return end;
 	--check if we have cooldown for that unit
 	if not self.cds[self.targets[which]] then return end;
 	--sort them
@@ -494,4 +496,16 @@ end
 function Vect:setAllCDebug(v)
 	local db = Vect.db.profile;
 	db["allCDebug"] = v;
+end
+
+function Vect:getSelfCDRegister()
+	local db = Vect.db.profile;
+	return db["selfCDRegister"];
+end
+
+function Vect:setSelfCDRegister(v)
+	local db = Vect.db.profile;
+	db["selfCDRegister"] = v;
+	Vect:ReassignCds("target");
+	Vect:ReassignCds("focus");
 end
