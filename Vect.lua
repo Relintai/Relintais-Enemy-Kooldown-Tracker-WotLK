@@ -1,6 +1,5 @@
 
 --TODOS:
---Enable/disable on frames
 --Player Entering World -> cleanup the db
 --CD Sort Order
 --Chat Command
@@ -68,7 +67,6 @@ function Vect:OnInitialize()
 	self:Print(self.appName .. " v. " .. Vect.version .. ". Chat command is /vect");
 	aceConfig:RegisterOptionsTable("Vect", self:GetVectOptions());
 	aceCDialog:AddToBlizOptions("Vect");
-	
 	self:RegisterChatCommand("vect", "ChatCommand");
 end
 
@@ -86,7 +84,12 @@ end
 
 
 function Vect:OnDisable()
-   self.Reset();
+	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	self:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
+	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+	self:UnregisterEvent("PLAYER_FOCUS_CHANGED")
+	self.Reset();
 end
 
 
@@ -98,6 +101,8 @@ function Vect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 					  dstGUID, dstName, dstFlags, spellID, spellName, spellSchool,
 					  detail1, detail2, detail3)
 	local db =  Vect.db.profile;
+
+	if not db["enabled"] then return end;
 	
 	--debugAll
 	if db["allCDebug"] then
@@ -151,12 +156,14 @@ end
 
 --gets called when a cd is finished, reassigns the cds to frames.
 function Vect:ReassignCds(which)
+	local db =  Vect.db.profile;
+	--bail out early, if frames are disabled
+	if not db[which]["enabled"] or not db["enabled"] then return end;
 	--first hide all
 	for i = 1, 23 do
 		local frame = Vect.frames[which][i]["frame"];
 		frame:Hide();
 	end
-	local db =  Vect.db.profile;
 	--check if frames are unlocked
 	if not db["locked"] then return end;
 	--check if we need to display them for the player
@@ -245,7 +252,7 @@ function Vect:CreateFrames(which)
 		local CoolDown = CreateFrame("Cooldown", "VectCoolDown" .. i, frame);
 		CoolDown:SetAllPoints()
 		CoolDown:SetCooldown(GetTime(), 50);
-		--frame:Show();
+		frame:Hide();
 		Vect.frames[which][i] = {}
 		Vect.frames[which][i]["frame"] = frame;
 		Vect.frames[which][i]["texture"] = text;
@@ -306,6 +313,16 @@ function Vect:VOnTimerUpdate(which)
 	end
 end
 
+function Vect:VectDisable()
+	self:Reset();
+	--self:Disable();
+end
+
+function Vect:VectEnable()
+	self:Reset();
+	self:ApplySettings();
+end
+
 --Utility Functions for the options
 
 --enable
@@ -315,10 +332,12 @@ function Vect:isEnabled()
 end
 
 function Vect:setEnabledOrDisabled(enable)
-	if enable then 
-		Vect:Enable() 
+	local db = Vect.db.profile;
+	db["enabled"] = enable;
+	if enable then
+		Vect:VectEnable()
 	else 
-		Vect:Disable() 
+		Vect:VectDisable() 
 	end
 end
 
@@ -330,7 +349,15 @@ end
 function Vect:SetPartEnabledOrDisabled(which, enable)
 	local db = Vect.db.profile;
 	db[which]["enabled"] = enable;
-	
+	--hide all those frames
+	if not enable then
+		for i = 1, 23 do
+			local frame = Vect.frames[which][i]["frame"];
+			frame:Hide();
+		end
+	else
+		self:ReassignCds(which);
+	end
 end
 
 --lock

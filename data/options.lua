@@ -8,7 +8,7 @@ function Vect:GetVectOptions()
 		args = {
 			enabled = {
 				type = "toggle", name = "Enabled", desc = "Enable/Disable the addon", order = 0,
-				get = function() return Vect:IsEnabled() end,
+				get = function() return Vect:isEnabled() end,
 				set = function(_, v)
 						Vect:setEnabledOrDisabled(v);
 					end
