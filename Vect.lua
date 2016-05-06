@@ -1,8 +1,7 @@
 
 --TODOS:
 --DR timers
---Way to show pet cds on the master
---Mark movable frames to know which is which
+--Way to show pet cds on the master -> currently looks impossible
 
 --"Globals"
 local aceDB = LibStub("AceDB-3.0")
@@ -470,7 +469,20 @@ function Vect:ShowMovableFrames()
 			text:SetTexture("Interface\\Icons\\Spell_Arcane_Blink")
 			text:SetAllPoints(frame);
 			frame.texture = text;
-
+			local t = frame:CreateFontString(nil, "OVERLAY");
+			t:SetNonSpaceWrap(false);
+			t:SetPoint("CENTER", frame, "CENTER", 2, 0);
+			t:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE, MONOCHROME")
+			
+			local ttext = "";
+			if i == 1 then
+				ttext = "T";
+			elseif i == 2 then
+				ttext = "F";
+			end
+			
+			t:SetText(ttext);
+			
 			local which = "";
 			if i == 1 then
 				which = "target";
@@ -483,6 +495,7 @@ function Vect:ShowMovableFrames()
 			Vect.MovableFrames[i] = {}
 			Vect.MovableFrames[i]["frame"] = frame;
 			Vect.MovableFrames[i]["texture"] = text;
+			Vect.MovableFrames[i]["text"] = t;
 		end
 	end
 
