@@ -45,6 +45,11 @@ function Vect:DRDebuffGained(spellID, dstGUID, isPlayer)
 		Vect.drs[dstGUID][drCat][5] = spellID;
 		Vect.drs[dstGUID][drCat][6] = Vect.drs[dstGUID][drCat][6] + 1;
 		Vect.drs[dstGUID][drCat][7] = false;
+		
+		--reset it back to 1, x > 3 means, the server updated the dr in less than 18 sec.
+		if Vect.drs[dstGUID][drCat][6] > 3 then
+			Vect.drs[dstGUID][drCat][6] = 1;
+		end
 	end
 	
 	--self:Print(Vect.cds[srcGUID][spellID][1] .. " " .. Vect.cds[srcGUID][spellID][2] .. " " .. Vect.cds[srcGUID][spellID][3]);
@@ -325,9 +330,9 @@ function Vect:UpdateDRs(unitGUID)
 	local found = false;
 	--let's check if one of the cooldowns finished
 	for k, v in pairs(self.drs[unitGUID]) do
-		if v[7] == true and v[2] <= t then
+		if (v[7] == true and v[2] <= t) or (v[2] + 25 <= t) then
 			self.drs[unitGUID][v[8]] = nil;
-			fount = true;
+			found = true;
 		end
 	end
 	return found;
