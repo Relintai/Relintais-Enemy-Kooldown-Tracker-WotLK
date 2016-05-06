@@ -1,0 +1,12 @@
+## Interface: 30300
+## Author: Verot
+## Name: Vect
+## Title: Vect
+## Notes: Verot's Enemy cooldown tracker.
+## DefaultState: Enabled
+## OptionalDeps: Ace3, LibSharedMedia-3.0
+## SavedVariables: VectDB
+## Version: 0.1
+
+embeds.xml
+
