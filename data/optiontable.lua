@@ -423,7 +423,7 @@ function Vect:getGlobalOptions()
 			type = "header", name = "Global CD Type sorting", order = 13
 		},
 		cdtypesortordertoggle = {
-				type = "toggle", name = "Enabled", desc = "Enable/Disable CD Type Sort Order", order = 15,
+				type = "toggle", name = "Enabled", desc = "Enable/Disable CD Type Sort Order, It works like this: you set silence to 1, then cc to 2 and anticc to 2, then silences will go first, then cc and anticc as secound, they are organized within groups based on how you set them in the CDs settings tab.", order = 15,
 				get = function() return Vect:getCDTypeSortingEnable() end,
 				set = function(_, v)
 					Vect:setCDTypeSortingEnable(v);
