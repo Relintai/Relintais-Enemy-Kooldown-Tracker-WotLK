@@ -164,16 +164,16 @@ Vect.defaults = {
 			enabled = true,
 			silence = 1,
 			gapcloser = 2,
-			defensive = 3,
-			potion = 4,
-			nuke = 5,
-			anticc = 6,
-			cc = 7,
-			stun = 8,
+			defensive = 6,
+			potion = 12,
+			nuke = 7,
+			anticc = 5,
+			cc = 4,
+			stun = 3,
 			disarm = 9,
 			cdreset = 10,
-			shield = 11,
-			uncategorized = 12
+			shield = 5,
+			uncategorized = 13
 		}
    }
 }
