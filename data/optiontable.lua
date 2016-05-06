@@ -199,7 +199,7 @@ function Vect:getDROptions()
 			end
 		},
 		targetdrnumsizerange = {
-			type = "range", name = "Number's size", desc = "Target's DR's Number's size",
+			type = "range", name = "Number's size", desc = "Target's DR's Number's size. Set it to 0 to disable it!",
 			order = 15, min = 1, max = 30, step = 1,
 			get = function() return Vect:getDRNumSize("targetdr") end,
 			set = function(_, v)
@@ -223,17 +223,17 @@ function Vect:getDROptions()
 			end
 		},
 		focusdrHeader = {
-			type = "header", name = "Focus's settings", order = 15
+			type = "header", name = "Focus's settings", order = 17
 		},
 		focusdrtoggle = {
-				type = "toggle", name = "Enabled", desc = "Enable/Disable showing the focus's DRs.", order = 16,
+				type = "toggle", name = "Enabled", desc = "Enable/Disable showing the focus's DRs.", order = 18,
 				get = function() return Vect:isPartEnabled("focusdr") end,
 				set = function(_, v)
 					Vect:SetDRPartEnabledOrDisabled("focusdr", v);
 				end
 		},
 		focusdrRange = {
-				type = "range", name = "Focus's size", order = 17, min = 10, max = 150, step = 1,
+				type = "range", name = "Focus's size", order = 19, min = 10, max = 150, step = 1,
 				get = function() return Vect:getFrameSize("focusdr") end,
 				set = function(_, v)
 					Vect:setFrameSize("focusdr", v);
@@ -241,7 +241,7 @@ function Vect:getDROptions()
 		},
 		focusdrGrowSelect = {
 			type = "select", style = "dropdown", name = "focusDRGrow", 
-			desc = "Change which way the focus's DRs will grow", order = 18, 
+			desc = "Change which way the focus's DRs will grow", order = 20, 
 			values = {
 				["1"] = "Up",
 				["2"] = "Right",
@@ -255,7 +255,7 @@ function Vect:getDROptions()
 		},
 		focusdrSortSelect = {
 			type = "select", style = "dropdown", name = "focusDRSortOrder", 
-			desc = "Change the focus's DR's sort order", order = 19, 
+			desc = "Change the focus's DR's sort order", order = 21, 
 			values = {
 				["1"] = "Ascending (CD left)",
 				["2"] = "Descending (CD left)",
@@ -269,7 +269,31 @@ function Vect:getDROptions()
 			set = function(_, v)
 				Vect:setSortOrder("focusdr", v);
 			end
-		}
+		},
+		focusdrnumsizerange = {
+			type = "range", name = "Number's size", desc = "Focus's DR's Number's size. Set it to 0 to disable it!",
+			order = 22, min = 1, max = 30, step = 1,
+			get = function() return Vect:getDRNumSize("focusdr") end,
+			set = function(_, v)
+				Vect:setDRNumSize("focusdr", v);
+			end
+			
+		},
+		focusdrnumposselect = {
+			type = "select", style = "dropdown", name = "focusDRNumPos", 
+			desc = "Change the focus's DR's number's position.", order = 23, 
+			values = {
+				["1"] = "Up",
+				["2"] = "Right",
+				["3"] = "Down",
+				["4"] = "Left",
+				["5"] = "Middle"
+			},
+			get = function() return Vect:getDRNumPosition("focusdr") end,
+			set = function(_, v)
+				Vect:setDRNumPosition("focusdr", v);
+			end
+		},
 	}
 	return args;
 end
@@ -322,6 +346,30 @@ function Vect:getSelfDROptions()
 				Vect:setSortOrder("selfdr", v);
 			end
 		},
+		selfdrnumsizerange = {
+			type = "range", name = "Number's size", desc = "Your DR's Number's size. Set it to 0 to disable it!",
+			order = 15, min = 1, max = 30, step = 1,
+			get = function() return Vect:getDRNumSize("selfdr") end,
+			set = function(_, v)
+				Vect:setDRNumSize("selfdr", v);
+			end
+			
+		},
+		selfdrnumposselect = {
+			type = "select", style = "dropdown", name = "selfDRNumPos", 
+			desc = "Change your DR's number's position.", order = 16, 
+			values = {
+				["1"] = "Up",
+				["2"] = "Right",
+				["3"] = "Down",
+				["4"] = "Left",
+				["5"] = "Middle"
+			},
+			get = function() return Vect:getDRNumPosition("selfdr") end,
+			set = function(_, v)
+				Vect:setDRNumPosition("selfdr", v);
+			end
+		},
 	}
 	return args;
 end
@@ -333,7 +381,7 @@ function Vect:getDebugOptions()
 			type = "toggle", name = "SpellCast", desc = "Enable/Disable writing out SPELL_CAST_SUCCESS events.", order = 50,
 			get = function() return Vect:getSpellCastDebug() end,
 			set = function(_, v)
-				Vect:setSpellCastDebug(v);
+				2Vect:setSpellCastDebug(v);
 			end
 		},
 		spellAura = {
