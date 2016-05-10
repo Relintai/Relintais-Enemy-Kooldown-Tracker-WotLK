@@ -73,6 +73,14 @@ Rekt.defaults = {
 			colorframeenabled = true,
 			colorframesize = 4
 		},
+		warnframe = {
+			enabled = true,
+			size = 40,
+			xPos = 380,
+			yPos = 380,
+			textsize = 14,
+			textposition = tostring(1)
+		},
 		targetdr = {
 			enabled = true,
 			size = 27,
@@ -242,7 +250,7 @@ function Rekt:CombatLogClearFix()
 
 	--this will happen on the first run, this is here, becouse on the first test, 
 	--the first clear on load just bugged the addon, until the second clear
-	if delta > 30 then
+	if delta < 30 then
 		return;
 	end
 
@@ -309,7 +317,7 @@ function Rekt:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 		end
 	  
 		if Rekt.spells[spellID] then
-			Rekt:AddCd(srcGUID, spellID, srcFlags);
+			Rekt:AddCd(srcGUID, spellID, eventType, srcFlags);
 		end
 	end
 

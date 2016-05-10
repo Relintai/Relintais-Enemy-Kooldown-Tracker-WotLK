@@ -51,7 +51,7 @@ function Rekt:ReassignCds(which)
 	end
 end
 
-function Rekt:AddCd(srcGUID, spellID, srcFlags)
+function Rekt:AddCd(srcGUID, spellID, eventType, srcFlags)
 	local db = Rekt.db.profile;
 	if not db["enabled"] then return end;
 	
@@ -106,7 +106,7 @@ function Rekt:AddCd(srcGUID, spellID, srcFlags)
 	}
 
 	--Interruptbar
-	if interrupt and db["interruptbar"]["enabled"] then
+	if interrupt and db["interruptbar"]["enabled"] and eventType == "SPELL_CAST_SUCCESS" then
 		Rekt:AddInterruptCD(Rekt.cds[srcGUID][spellID], srcFlags);
 	end
 	

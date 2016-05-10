@@ -232,6 +232,48 @@ function Rekt:getTargetandFocusOptions()
 				Rekt:setColorFrameSize("interruptbar", v);
 			end
 		},
+
+		warnHeader = {
+			type = "header", name = "Warn Frame's settings", order = 40
+		},
+		warntoggle = {
+			type = "toggle", name = "Warn Frame", desc = "Enable/Disable showing the Warn Frame", order = 41,
+			get = function() return Rekt:isPartEnabled("interruptbar") end,
+			set = function(_, v)
+				Rekt:SetPartEnabledOrDisabled("interruptbar", v);
+			end
+		},
+		warnrange = {
+			type = "range", name = "Warn Frame's size", order = 42, min = 10, max = 150, step = 1,
+			get = function() return Rekt:getFrameSize("interruptbar") end,
+			set = function(_, v)
+				Rekt:setFrameSize("interruptbar", v);
+			end
+		},
+		warntextsizerange = {
+			type = "range", name = "Text size", desc = "Warn Frame's Text size. Set it to 0 to disable it!",
+			order = 43, min = 1, max = 30, step = 1,
+			get = function() return Rekt:getDRNumSize("targetdr") end,
+			set = function(_, v)
+				Rekt:setDRNumSize("targetdr", v);
+			end
+		},
+		warntextposselect = {
+			type = "select", style = "dropdown", name = "Warn Frame Text Position", 
+			desc = "Change the target's DR's number's position.", order = 44, 
+			values = {
+				["1"] = "Up",
+				["2"] = "Right",
+				["3"] = "Down",
+				["4"] = "Left",
+				["5"] = "Middle"
+			},
+			get = function() return Rekt:getDRNumPosition("targetdr") end,
+			set = function(_, v)
+				Rekt:setDRNumPosition("targetdr", v);
+			end
+		},
+
 	}
 	return args;
 end

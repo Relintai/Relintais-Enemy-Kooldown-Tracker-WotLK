@@ -15,7 +15,6 @@ function Rekt:AddInterruptCD(cooldown, srcFlags)
 		end
 	end
 
-
 	local ir = Rekt.interrupts;
 
 	ir["count"] = ir["count"] + 1;
@@ -97,7 +96,8 @@ function Rekt:UpdateIBCDs()
 
 	if found then
 		self.interrupts["count"] = self.interrupts["count"] - count;
-		self.interrupts["spells"] = Rekt.NormalizeTable(self.interrupts["spells"]);
+		--self:Print("Count:" .. count .. " self.interruptscount: " .. self.interrupts["count"]);
+		self.interrupts["spells"] = Rekt:NormalizeTable(self.interrupts["spells"]);
 	end
 
 	return found;
@@ -116,8 +116,11 @@ end
 	for k, v in pairs(table) do
 		if v then
 			tmp[i] = v;
+			i = i + 1;
 		end
 	end
+
+	--self:Print("normalize i: " .. i);
 
 	return tmp;
 end
