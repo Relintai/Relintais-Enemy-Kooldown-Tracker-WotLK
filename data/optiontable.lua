@@ -232,7 +232,7 @@ function Rekt:getTargetandFocusOptions()
 				Rekt:setColorFrameSize("interruptbar", v);
 			end
 		},
-
+		--[[
 		warnHeader = {
 			type = "header", name = "Warn Frame's settings", order = 40
 		},
@@ -273,7 +273,7 @@ function Rekt:getTargetandFocusOptions()
 				Rekt:setDRNumPosition("targetdr", v);
 			end
 		},
-
+		]]--
 	}
 	return args;
 end
