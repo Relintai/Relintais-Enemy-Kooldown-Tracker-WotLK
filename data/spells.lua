@@ -14,6 +14,13 @@
 --ispetspell -> if its a pet spell true, else false
 
 --TODO recklessness value!
+--TODO Rapid Fire value!
+--TODO cheating death
+--TODO Physic scream spec3 value is wrong
+--TODO Sdahow Word Death, as it's a cc breaker
+--TODO Shaman Nature's Swiftness base cd is probably wrong
+--TODO Shaman Nature's guardian proc i think its a cd in wotlk
+--TODO cold snap resets frost ward, and fire ward here?
 
 Rect.spells = {
 	--Trinkets
