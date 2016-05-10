@@ -251,7 +251,10 @@ Rekt.spells = {
 	--Subtlety
 	[2094] = {120, nil, 120, 120, 120, 0, "Rogue", "cc", false, false, false}, --Blind
 	[31224] = {60, nil, 60, 60, 60, 0, "Rogue", "defensive", false, false, false}, --Cloak of Shadows
-	[14185] = {300, {5277, 26669, 2983, 8696, 11305, 1856, 1857, 26889, 14177, 36554, false, false}, 480, 480, 300, 0, "Rogue", "cdreset", false, false, false}, --Preparation
+	[14185] = {300, 
+		{
+			5277, 26669, 2983, 8696, 11305, 1856, 1857, 26889, 14177, 36554
+		}, 480, 480, 300, 0, "Rogue", "cdreset", false, false, false}, --Preparation
 	[51713] = {60, nil, 60, 60, 60, 5, "Rogue", "nuke", false, false, false}, --Shadow Dance
 	[36554] = {20, nil, 30, 30, 20, 5, "Rogue", "gapcloser", false, false, false}, --Shadowstep
 	[1856] = {120, nil, 120, 120, 120, 0, "Rogue", "defensive", false, false, false}, --Vanish r1
@@ -479,7 +482,8 @@ Rekt.spells = {
 	[11958] = {384, 
 		{44572, 122, 865, 6131, 10230, 27088, 42917, 6143, 8461, 8462,
 		10177, 28609, 32796, 43012, 11426, 13031, 13032, 13033,
-		27134, 33405, 43038, 43039, 45438, 12472, 31687, false, false}, 480, 480, 384, 5, "Mage", "cdreset", false, false, false}, --Cold Snap
+		27134, 33405, 43038, 43039, 45438, 12472, 31687
+		}, 480, 480, 384, 5, "Mage", "cdreset", false, false, false}, --Cold Snap
 	[44572] = {30, nil, 30, 30, 30, 5, "Mage", "stun", false, false, false}, --Deep Freeze
 	[122] = {20, nil, 20, 20, 20, 0, "Mage", "cc", false, false, false}, --Frost Nova r1
 	[865] = {20, nil, 20, 20, 20, 0, "Mage", "cc", false, false, false}, --Frost Nova r2
