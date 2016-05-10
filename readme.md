@@ -2,6 +2,10 @@
 
 This is a PvP addon for **World of Warcraft - Wrath of the Lich King (3.3.5a)**
 
+# Screenshot
+
+![Relintai's Enemy "Kooldown" Tracker](https://cloud.githubusercontent.com/assets/16229538/15148105/05fc26d8-16c4-11e6-8606-b5a9e8fb3075.png)
+
 # Main Features
 
 ## Cooldowns
@@ -36,4 +40,4 @@ Practicly your combatlog stops processing any new events, a fix is implemented t
 
 For the addon's settings go to Interface->Switch ot the addons tab->Rekt
 or
-type /rect into the chat
+type /rekt into the chat
