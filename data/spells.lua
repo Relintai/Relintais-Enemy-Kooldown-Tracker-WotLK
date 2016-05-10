@@ -24,7 +24,7 @@
 --TODO Shaman Nature's guardian proc i think its a cd in wotlk
 --TODO cold snap resets frost ward, and fire ward here?
 
-Rect.spells = {
+Rekt.spells = {
 	--Trinkets
 	[42292] = {120, nil, 120, 120, 120, 0, "", "anticc", false}, --PvP Trinket
 	--Other Stuff

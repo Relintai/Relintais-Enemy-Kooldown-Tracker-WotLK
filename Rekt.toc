@@ -1,12 +1,12 @@
 ## Interface: 30300
 ## Author: Relintai
-## Name: Rect
-## Title: Rect
-## Notes: Relintai's Enemy Cooldown Tracker.
+## Name: Rekt
+## Title: Rekt
+## Notes: Relintai's Enemy "Kooldown" Tracker.
 ## DefaultState: Enabled
 ## OptionalDeps: Ace3
-## SavedVariables: RectDB
-## Version: 1.01
+## SavedVariables: RektDB
+## Version: 1.05
 
 embeds.xml
 data\global.lua
@@ -16,4 +16,4 @@ data\options.lua
 data\sorters.lua
 data\drs.lua
 data\cooldowns.lua
-Rect.lua
+Rekt.lua

@@ -1,6 +1,6 @@
 
 --["1"] = "Ascending (CD left)",
-function Rect:ComparerAscendingCDLeft(a, b)
+function Rekt:ComparerAscendingCDLeft(a, b)
 	if a.endTime < b.endTime then
 		return true;
 	else
@@ -9,7 +9,7 @@ function Rect:ComparerAscendingCDLeft(a, b)
 end
 
 --["2"] = "Descending (CD left)",
-function Rect:ComparerDescendingCDLeft(a, b)
+function Rekt:ComparerDescendingCDLeft(a, b)
 	if a.endTime < b.endTime then
 		return false;
 	else
@@ -18,7 +18,7 @@ function Rect:ComparerDescendingCDLeft(a, b)
 end
 
 --["3"] = "Ascending (CD total)",
-function Rect:ComparerAscendingCDTotal(a, b)
+function Rekt:ComparerAscendingCDTotal(a, b)
 	if a.cd < b.cd then
 		return true;
 	else
@@ -27,7 +27,7 @@ function Rect:ComparerAscendingCDTotal(a, b)
 end
 
 --["4"] = "Descending (CD total)",
-function Rect:ComparerDescendingCDTotal(a, b)
+function Rekt:ComparerDescendingCDTotal(a, b)
 	if a.cd < b.cd then
 		return false;
 	else
@@ -36,7 +36,7 @@ function Rect:ComparerDescendingCDTotal(a, b)
 end
 
 --["5"] = "Recent first",
-function Rect:ComparerRecentFirst(a, b)
+function Rekt:ComparerRecentFirst(a, b)
 	if a.currentTime < b.currentTime then
 		return false;
 	else
@@ -45,7 +45,7 @@ function Rect:ComparerRecentFirst(a, b)
 end
 
 --["6"] = "Recent Last",
-function Rect:ComparerRecentLast(a, b)
+function Rekt:ComparerRecentLast(a, b)
 	if a.currentTime < b.currentTime then
 		return true;
 	else
@@ -56,8 +56,8 @@ end
 --CD Type sorters
 
 --["1"] = "Ascending (CD left)",
-function Rect:ComparerAscendingCDLeftT(a, b)
-	local db = Rect.db.profile;
+function Rekt:ComparerAscendingCDLeftT(a, b)
+	local db = Rekt.db.profile;
 
 	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
 		return true;
@@ -73,8 +73,8 @@ function Rect:ComparerAscendingCDLeftT(a, b)
 end
 
 --["2"] = "Descending (CD left)",
-function Rect:ComparerDescendingCDLeftT(a, b)
-	local db = Rect.db.profile;
+function Rekt:ComparerDescendingCDLeftT(a, b)
+	local db = Rekt.db.profile;
 
 	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
 		return true;
@@ -90,8 +90,8 @@ function Rect:ComparerDescendingCDLeftT(a, b)
 end
 
 --["3"] = "Ascending (CD total)",
-function Rect:ComparerAscendingCDTotalT(a, b)
-	local db = Rect.db.profile;
+function Rekt:ComparerAscendingCDTotalT(a, b)
+	local db = Rekt.db.profile;
 
 	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
 		return true;
@@ -107,8 +107,8 @@ function Rect:ComparerAscendingCDTotalT(a, b)
 end
 
 --["4"] = "Descending (CD total)",
-function Rect:ComparerDescendingCDTotalT(a, b)
-	local db = Rect.db.profile;
+function Rekt:ComparerDescendingCDTotalT(a, b)
+	local db = Rekt.db.profile;
 
 	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
 		return true;
@@ -124,8 +124,8 @@ function Rect:ComparerDescendingCDTotalT(a, b)
 end
 
 --["5"] = "Recent first",
-function Rect:ComparerRecentFirstT(a, b)
-	local db = Rect.db.profile;
+function Rekt:ComparerRecentFirstT(a, b)
+	local db = Rekt.db.profile;
 
 	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
 		return true;
@@ -141,8 +141,8 @@ function Rect:ComparerRecentFirstT(a, b)
 end
 
 --["6"] = "Recent Last",
-function Rect:ComparerRecentLastT(a, b)
-	local db = Rect.db.profile;
+function Rekt:ComparerRecentLastT(a, b)
+	local db = Rekt.db.profile;
 
 	if (db["cdtypesortorder"][a.spellCategory] < db["cdtypesortorder"][b.spellCategory]) then
 		return true;

@@ -6,23 +6,23 @@ local aceConfig = LibStub("AceConfig-3.0");
 local libSharedMedia = LibStub("LibSharedMedia-3.0");
 local libDRData = LibStub('DRData-1.0');
 
-Rect.CombatlogFixTimerData = {
+Rekt.CombatlogFixTimerData = {
 	["lasttick"] = 0,
 	["timesinceclear"] = 0
 }
 
-Rect.MovableFrames = nil
+Rekt.MovableFrames = nil
 
-Rect.targets = {
+Rekt.targets = {
 	["target"] = nil,
 	["focus"] = nil,
 	["self"] = nil
 }
 
-Rect.cds = {}
-Rect.drs = {}
+Rekt.cds = {}
+Rekt.drs = {}
 
-Rect.frames = {
+Rekt.frames = {
 	["target"] = {},
 	["focus"] = {},
 	["targetdr"] = {},
@@ -30,7 +30,7 @@ Rect.frames = {
 	["selfdr"] = {}
 }
 
-Rect.defaults = {
+Rekt.defaults = {
    profile = {
 		enabled = true,
 		locked = true,
@@ -183,26 +183,26 @@ Rect.defaults = {
    }
 }
 
-function Rect:Reset()
-   Rect.cds = {}
-   Rect.drs = {}
-   Rect.target = {unitGUID = -1, timers = {}}
-   Rect.focus = {unitGUID = -1, timers = {}}
-   Rect:HideSelfDRFrames();
+function Rekt:Reset()
+   Rekt.cds = {}
+   Rekt.drs = {}
+   Rekt.target = {unitGUID = -1, timers = {}}
+   Rekt.focus = {unitGUID = -1, timers = {}}
+   Rekt:HideSelfDRFrames();
 end
    
-function Rect:OnInitialize()
-	self.db = aceDB:New("RectDB", self.defaults);
+function Rekt:OnInitialize()
+	self.db = aceDB:New("RektDB", self.defaults);
 	self.db.RegisterCallback(self, "OnProfileChanged", function() self:ApplySettings() end);
 	self.db.RegisterCallback(self, "OnProfileCopied", function() self:ApplySettings() end);
 	self.db.RegisterCallback(self, "OnProfileReset", function() self:ApplySettings() end);
-	aceConfig:RegisterOptionsTable("Rect", self:GetRectOptions());
-	aceCDialog:AddToBlizOptions("Rect");
-	self:RegisterChatCommand("Rect", "ChatCommand");
+	aceConfig:RegisterOptionsTable("Rekt", self:GetRektOptions());
+	aceCDialog:AddToBlizOptions("Rekt");
+	self:RegisterChatCommand("Rekt", "ChatCommand");
 
 end
 
-function Rect:OnEnable()
+function Rekt:OnEnable()
 	self:Reset()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
@@ -223,9 +223,9 @@ function Rect:OnEnable()
 	f:SetScript("OnUpdate", function() self:CombatLogClearFix() end);
 end
 
-function Rect:CombatLogClearFix()
+function Rekt:CombatLogClearFix()
 	--delta is in seconds
-	local delta = GetTime() - Rect.CombatlogFixTimerData["lasttick"];
+	local delta = GetTime() - Rekt.CombatlogFixTimerData["lasttick"];
 
 	--this will happen on the first run, this is here, becouse on the first test, 
 	--the first clear on load just bugged the addon, until the second clear
@@ -233,7 +233,7 @@ function Rect:CombatLogClearFix()
 		return;
 	end
 
-	local tslc = Rect.CombatlogFixTimerData["timesinceclear"] + delta;
+	local tslc = Rekt.CombatlogFixTimerData["timesinceclear"] + delta;
 
 	--30 seconds should be enough
 	if tslc >= 30 then
@@ -241,11 +241,11 @@ function Rect:CombatLogClearFix()
 		tslc = 0;
 	end
 
-	Rect.CombatlogFixTimerData["timesinceclear"] = tslc;
-	Rect.CombatlogFixTimerData["lasttick"] = GetTime();
+	Rekt.CombatlogFixTimerData["timesinceclear"] = tslc;
+	Rekt.CombatlogFixTimerData["lasttick"] = GetTime();
 end
 
-function Rect:OnDisable()
+function Rekt:OnDisable()
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD");
 	self:UnregisterEvent("ZONE_CHANGED_NEW_AREA");
 	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
@@ -255,11 +255,11 @@ function Rect:OnDisable()
 end
 
 
-function Rect:ChatCommand(input)
+function Rekt:ChatCommand(input)
 	if not input or input:trim() == "" then
-		aceCDialog:Open("Rect");
+		aceCDialog:Open("Rekt");
 	else
-		LibStub("AceConfigCmd-3.0").HandleCommand(Rect, "Rect", "Rect", input);
+		LibStub("AceConfigCmd-3.0").HandleCommand(Rekt, "Rekt", "Rekt", input);
 	end
 end
 
@@ -268,10 +268,10 @@ local COMBATLOG_OBJECT_REACTION_HOSTILE = COMBATLOG_OBJECT_REACTION_HOSTILE
 local COMBATLOG_OBJECT_CONTROL_PLAYER = COMBATLOG_OBJECT_CONTROL_PLAYER
 
 
-function Rect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcName, srcFlags, 
+function Rekt:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcName, srcFlags, 
 					  dstGUID, dstName, dstFlags, spellID, spellName, spellSchool,
 					  detail1, detail2, detail3)
-	local db =  Rect.db.profile;
+	local db =  Rekt.db.profile;
 
 	if not db["enabled"] then return end;
 	
@@ -295,8 +295,8 @@ function Rect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 			self:Print("id: " .. spellID .. " spellName: " .. spellName);
 		end
 	  
-		if Rect.spells[spellID] then
-			Rect:AddCd(srcGUID, spellID);
+		if Rekt.spells[spellID] then
+			Rekt:AddCd(srcGUID, spellID);
 		end
 	end
 
@@ -310,7 +310,7 @@ function Rect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 			end
 			
 			local drCat = libDRData:GetSpellCategory(spellID);
-			Rect:DRDebuffGained(spellID, dstGUID, isPlayer);
+			Rekt:DRDebuffGained(spellID, dstGUID, isPlayer);
 		end
 	
 	-- Enemy had a debuff refreshed before it faded, so fade + gain it quickly
@@ -322,8 +322,8 @@ function Rect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 				return
 			end
 			
-			Rect:DRDebuffFaded(spellID, dstGUID, isPlayer);
-			Rect:DRDebuffGained(spellID, dstGUID, isPlayer);
+			Rekt:DRDebuffFaded(spellID, dstGUID, isPlayer);
+			Rekt:DRDebuffGained(spellID, dstGUID, isPlayer);
 		end
 	
 	-- Buff or debuff faded from an enemy
@@ -335,42 +335,42 @@ function Rect:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 				return
 			end
 			
-			Rect:DRDebuffFaded(spellID, dstGUID, isPlayer);
+			Rekt:DRDebuffFaded(spellID, dstGUID, isPlayer);
 		end
 	end
 end
 
-function Rect:PLAYER_TARGET_CHANGED()
+function Rekt:PLAYER_TARGET_CHANGED()
 	local unitGUID = UnitGUID("target");
 	self.targets["target"] = unitGUID;
 	self:ReassignCds("target");
 	self:ReassignDRs("targetdr");
 end
 
-function Rect:PLAYER_FOCUS_CHANGED()
+function Rekt:PLAYER_FOCUS_CHANGED()
 	local unitGUID = UnitGUID("focus");
 	self.targets["focus"] = unitGUID;
 	self:ReassignCds("focus");
 	self:ReassignDRs("focusdr");
 end
 
-function Rect:PLAYER_ENTERING_WORLD()
+function Rekt:PLAYER_ENTERING_WORLD()
 	--DB cleanup
 	local t = GetTime();
-	for k, v in pairs(Rect.cds) do
+	for k, v in pairs(Rekt.cds) do
 		for i, j in pairs(v) do
 			if not (i == "spec") then
 				if j[2] < t then
-					--self:Print(Rect.cds[k][i][4]);
-					Rect.cds[k][i] = nil;
+					--self:Print(Rekt.cds[k][i][4]);
+					Rekt.cds[k][i] = nil;
 				end
 			end
 		end
 	end
-	Rect.drs = {}
+	Rekt.drs = {}
 end
 
-function Rect:ZONE_CHANGED_NEW_AREA()
+function Rekt:ZONE_CHANGED_NEW_AREA()
 	local type = select(2, IsInInstance())
 	-- If we are entering an arena
 	if (type == "arena") then
@@ -378,17 +378,17 @@ function Rect:ZONE_CHANGED_NEW_AREA()
 	end
 end
 
-function Rect:ApplySettings()
-	local db = Rect.db.profile;
-	Rect:MoveTimersStop("target");
-	Rect:MoveTimersStop("focus");
-	Rect:ReassignCds("target");
-	Rect:ReassignCds("focus");
-	Rect:MoveDRTimersStop("targetdr");
-	Rect:MoveDRTimersStop("focusdr");
-	Rect:MoveDRTimersStop("selfdr");
-	Rect:ReassignDRs("targetdr");
-	Rect:ReassignDRs("focusdr");
-	Rect:ReassignDRs("selfdr");
+function Rekt:ApplySettings()
+	local db = Rekt.db.profile;
+	Rekt:MoveTimersStop("target");
+	Rekt:MoveTimersStop("focus");
+	Rekt:ReassignCds("target");
+	Rekt:ReassignCds("focus");
+	Rekt:MoveDRTimersStop("targetdr");
+	Rekt:MoveDRTimersStop("focusdr");
+	Rekt:MoveDRTimersStop("selfdr");
+	Rekt:ReassignDRs("targetdr");
+	Rekt:ReassignDRs("focusdr");
+	Rekt:ReassignDRs("selfdr");
 	if not db["locked"] then self:ShowMovableFrames() end;
 end

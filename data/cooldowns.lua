@@ -7,15 +7,15 @@ local libSharedMedia = LibStub("LibSharedMedia-3.0");
 local libDRData = LibStub('DRData-1.0');
 
 --gets called when a cd is finished, reassigns the cds to frames.
-function Rect:ReassignCds(which)
-	local db =  Rect.db.profile;
+function Rekt:ReassignCds(which)
+	local db =  Rekt.db.profile;
 	--bail out early, if frames are disabled
 	if not db[which]["enabled"] or not db["enabled"] then return end;
 	--first hide all
 	for i = 1, 23 do
-		local frame = Rect.frames[which][i]["frame"];
+		local frame = Rekt.frames[which][i]["frame"];
 		frame:Hide();
-		local colorframe = Rect.frames[which][i]["colorframe"];
+		local colorframe = Rekt.frames[which][i]["colorframe"];
 		colorframe:Hide();
 	end
 	--check if frames are unlocked
@@ -25,20 +25,20 @@ function Rect:ReassignCds(which)
 	--check if we have cooldown for that unit
 	if not self.cds[self.targets[which]] then return end;
 	--update cds
-	Rect:UpdateCds(which);
+	Rekt:UpdateCds(which);
 	--sort them
-	local tmp = Rect:SortCDs(which);
+	local tmp = Rekt:SortCDs(which);
 	--let's fill them up
 	local i = 1;
 	for k, v in ipairs(tmp) do
-		local frame = Rect.frames[which][i]["frame"];
-		local text = Rect.frames[which][i]["texture"];
+		local frame = Rekt.frames[which][i]["frame"];
+		local text = Rekt.frames[which][i]["texture"];
 		text:SetTexture(v["spellIcon"]);
-		local CoolDown = Rect.frames[which][i]["cooldown"];
+		local CoolDown = Rekt.frames[which][i]["cooldown"];
 		CoolDown:SetCooldown(v["currentTime"], v["cd"]);
 		frame:Show();
 		if (db[which]["colorframeenabled"]) then
-			local colorframe = Rect.frames[which][i]["colorframe"];
+			local colorframe = Rekt.frames[which][i]["colorframe"];
 			--self:Print(v["spellID"] .. " cat: " .. v["spellCategory"]);
 			
 			colorframe:SetBackdropColor(db["color"][v["spellCategory"]]["r"], 
@@ -51,31 +51,31 @@ function Rect:ReassignCds(which)
 	end
 end
 
-function Rect:AddCd(srcGUID, spellID)
-	local db =  Rect.db.profile;
+function Rekt:AddCd(srcGUID, spellID)
+	local db =  Rekt.db.profile;
 	if not db["enabled"] then return end;
 	
-	if not Rect.cds[srcGUID] then 
-		Rect.cds[srcGUID] = {}
-		Rect.cds[srcGUID]["spec"] = {};
-		Rect.cds[srcGUID]["spec"][1] = 1;
-		Rect.cds[srcGUID]["spec"][2] = "";
+	if not Rekt.cds[srcGUID] then 
+		Rekt.cds[srcGUID] = {}
+		Rekt.cds[srcGUID]["spec"] = {};
+		Rekt.cds[srcGUID]["spec"][1] = 1;
+		Rekt.cds[srcGUID]["spec"][2] = "";
 	end
 	
 	local specchange = false;
 	if db["specdetection"] then
-		if Rect:DetectSpec(srcGUID, spellID) then
+		if Rekt:DetectSpec(srcGUID, spellID) then
 			specchange = true;
 		end
 	end
 	
-	local spec = Rect.cds[srcGUID]["spec"][1];
-	local class, isPet = Rect.spells[spellID][7], Rect.spells[spellID][9];
-	local cd, reset, spellCategory = Rect.spells[spellID][spec], Rect.spells[spellID][2], Rect.spells[spellID][8];
+	local spec = Rekt.cds[srcGUID]["spec"][1];
+	local class, isPet = Rekt.spells[spellID][7], Rekt.spells[spellID][9];
+	local cd, reset, spellCategory = Rekt.spells[spellID][spec], Rekt.spells[spellID][2], Rekt.spells[spellID][8];
 	
 	if db["petcdguessing"] then
-		if (Rect.cds[srcGUID]["spec"][2] == "") and class then
-			Rect.cds[srcGUID]["spec"][2] = class;
+		if (Rekt.cds[srcGUID]["spec"][2] == "") and class then
+			Rekt.cds[srcGUID]["spec"][2] = class;
 		end
 	end
 	
@@ -95,7 +95,7 @@ function Rect:AddCd(srcGUID, spellID)
 	local spellName, spellRank, spellIcon = GetSpellInfo(spellID);
 	local currentTime = GetTime();
 	local endTime = currentTime + cd;
-	Rect.cds[srcGUID][spellID] = {
+	Rekt.cds[srcGUID][spellID] = {
 		currentTime,
 		endTime,
 		cd,
@@ -106,9 +106,9 @@ function Rect:AddCd(srcGUID, spellID)
 	
 	--add it to every class of the same type
 	if db["petcdguessing"] and isPet then
-		for k, v in pairs(Rect.cds) do
+		for k, v in pairs(Rekt.cds) do
 			if (v["spec"][2] == class) then
-				Rect.cds[k][spellID] = {
+				Rekt.cds[k][spellID] = {
 					currentTime,
 					endTime,
 					cd,
@@ -120,10 +120,10 @@ function Rect:AddCd(srcGUID, spellID)
 		end
 	end
 	
-	--self:Print(Rect.cds[srcGUID][spellID][1] .. " " .. Rect.cds[srcGUID][spellID][2] .. " " .. Rect.cds[srcGUID][spellID][3]);
+	--self:Print(Rekt.cds[srcGUID][spellID][1] .. " " .. Rekt.cds[srcGUID][spellID][2] .. " " .. Rekt.cds[srcGUID][spellID][3]);
 	
 	if reset then
-		Rect:CdRemoval(srcGUID, reset);
+		Rekt:CdRemoval(srcGUID, reset);
 	end
 	
 	--self:Print(self.targets["target"]);
@@ -138,28 +138,28 @@ function Rect:AddCd(srcGUID, spellID)
 	end
 end
 
-function Rect:DetectSpec(srcGUID, spellID)
-	local spec = Rect.spells[spellID][6];
+function Rekt:DetectSpec(srcGUID, spellID)
+	local spec = Rekt.spells[spellID][6];
 	
 	if spec == 0 then return false end;
-	if Rect.cds[srcGUID]["spec"][1] == spec then return false end;
+	if Rekt.cds[srcGUID]["spec"][1] == spec then return false end;
 	--self:Print("spec found: " .. spec);
-	Rect:RemapSpecCDs(srcGUID, spec);
+	Rekt:RemapSpecCDs(srcGUID, spec);
 	return true;
 end
 
-function Rect:RemapSpecCDs(srcGUID, spec)
+function Rekt:RemapSpecCDs(srcGUID, spec)
 	if not self.cds[srcGUID] then return end
 	for k, v in pairs(self.cds[srcGUID]) do
 		if not (k == "spec") then
-			local cd = Rect.spells[v[5]][spec];
+			local cd = Rekt.spells[v[5]][spec];
 			v[3] = cd;
 			v[2] = v[1] + cd;
 		end
 	end
 end
 
-function Rect:CdRemoval(srcGUID, resetArray)
+function Rekt:CdRemoval(srcGUID, resetArray)
 	if not self.cds[srcGUID] then return end
 	for k, v in pairs(self.cds[srcGUID]) do
 		if not (k == "spec") then
@@ -173,8 +173,8 @@ function Rect:CdRemoval(srcGUID, resetArray)
 	end
 end
 
-function Rect:SortCDs(which)
-	local db = Rect.db.profile;
+function Rekt:SortCDs(which)
+	local db = Rekt.db.profile;
 	local tmp = {};
 
 	--make the tmp table
@@ -200,38 +200,38 @@ function Rect:SortCDs(which)
 	
 	if not db["cdtypesortorder"]["enabled"] then
 		if db[which]["sortOrder"] == "1" then --["1"] = "Ascending (CD left)",
-			table.sort(tmp, function(a, b) return Rect:ComparerAscendingCDLeft(a, b) end);
+			table.sort(tmp, function(a, b) return Rekt:ComparerAscendingCDLeft(a, b) end);
 		elseif db[which]["sortOrder"] == "2" then --["2"] = "Descending (CD left)",
-			table.sort(tmp, function(a, b) return Rect:ComparerDescendingCDLeft(a, b) end);
+			table.sort(tmp, function(a, b) return Rekt:ComparerDescendingCDLeft(a, b) end);
 		elseif db[which]["sortOrder"] == "3" then --["3"] = "Ascending (CD total)",
-			table.sort(tmp, function(a, b) return Rect:ComparerAscendingCDTotal(a, b) end);
+			table.sort(tmp, function(a, b) return Rekt:ComparerAscendingCDTotal(a, b) end);
 		elseif db[which]["sortOrder"] == "4" then --["4"] = "Descending (CD total)",
-			table.sort(tmp, function(a, b) return Rect:ComparerDescendingCDTotal(a, b) end);
+			table.sort(tmp, function(a, b) return Rekt:ComparerDescendingCDTotal(a, b) end);
 		elseif db[which]["sortOrder"] == "5" then --["5"] = "Recent first",
-			table.sort(tmp, function(a, b) return Rect:ComparerRecentFirst(a, b) end);
+			table.sort(tmp, function(a, b) return Rekt:ComparerRecentFirst(a, b) end);
 		elseif db[which]["sortOrder"] == "6" then --["6"] = "Recent Last",
-			table.sort(tmp, function(a, b) return Rect:ComparerRecentLast(a, b) end);
+			table.sort(tmp, function(a, b) return Rekt:ComparerRecentLast(a, b) end);
 		end --["7"] = "No order"
 	else
 		if db[which]["sortOrder"] == "1" then --["1"] = "Ascending (CD left)",
-			table.sort(tmp, function(a, b) return Rect:ComparerAscendingCDLeftT(a, b) end);
+			table.sort(tmp, function(a, b) return Rekt:ComparerAscendingCDLeftT(a, b) end);
 		elseif db[which]["sortOrder"] == "2" then --["2"] = "Descending (CD left)",
-			table.sort(tmp, function(a, b) return Rect:ComparerDescendingCDLeftT(a, b) end);
+			table.sort(tmp, function(a, b) return Rekt:ComparerDescendingCDLeftT(a, b) end);
 		elseif db[which]["sortOrder"] == "3" then --["3"] = "Ascending (CD total)",
-			table.sort(tmp, function(a, b) return Rect:ComparerAscendingCDTotalT(a, b) end);
+			table.sort(tmp, function(a, b) return Rekt:ComparerAscendingCDTotalT(a, b) end);
 		elseif db[which]["sortOrder"] == "4" then --["4"] = "Descending (CD total)",
-			table.sort(tmp, function(a, b) return Rect:ComparerDescendingCDTotalT(a, b) end);
+			table.sort(tmp, function(a, b) return Rekt:ComparerDescendingCDTotalT(a, b) end);
 		elseif db[which]["sortOrder"] == "5" then --["5"] = "Recent first",
-			table.sort(tmp, function(a, b) return Rect:ComparerRecentFirstT(a, b) end);
+			table.sort(tmp, function(a, b) return Rekt:ComparerRecentFirstT(a, b) end);
 		elseif db[which]["sortOrder"] == "6" then --["6"] = "Recent Last",
-			table.sort(tmp, function(a, b) return Rect:ComparerRecentLastT(a, b) end);
+			table.sort(tmp, function(a, b) return Rekt:ComparerRecentLastT(a, b) end);
 		end --["7"] = "No order"
 	end
 	
 	return tmp;
 end
 
-function Rect:CreateFrames(which)
+function Rekt:CreateFrames(which)
 	for i = 1, 23 do
 		local frame = CreateFrame("Frame", nil, UIParent, nil);
 		frame:SetFrameStrata("MEDIUM");
@@ -244,7 +244,7 @@ function Rect:CreateFrames(which)
 		text:SetTexture("Interface\\Icons\\Spell_Arcane_Blink")
 		text:SetAllPoints(frame);
 		frame.texture = text;
-		local CoolDown = CreateFrame("Cooldown", "RectCoolDown" .. i, frame);
+		local CoolDown = CreateFrame("Cooldown", "RektCoolDown" .. i, frame);
 		CoolDown:SetAllPoints()
 		CoolDown:SetCooldown(GetTime(), 50);
 		frame:Hide();
@@ -261,16 +261,16 @@ function Rect:CreateFrames(which)
 					insets = nil});
 		colorframe:Hide();
 		
-		Rect.frames[which][i] = {}
-		Rect.frames[which][i]["frame"] = frame;
-		Rect.frames[which][i]["texture"] = text;
-		Rect.frames[which][i]["cooldown"] = CoolDown;
-		Rect.frames[which][i]["colorframe"] = colorframe;
+		Rekt.frames[which][i] = {}
+		Rekt.frames[which][i]["frame"] = frame;
+		Rekt.frames[which][i]["texture"] = text;
+		Rekt.frames[which][i]["cooldown"] = CoolDown;
+		Rekt.frames[which][i]["colorframe"] = colorframe;
 	end
 end
 
-function Rect:MoveTimersStop(which)
-	local db = Rect.db.profile;
+function Rekt:MoveTimersStop(which)
+	local db = Rekt.db.profile;
 	local x = db[which]["xPos"];
 	local y = db[which]["yPos"];
 	local size = db[which]["size"];
@@ -278,16 +278,16 @@ function Rect:MoveTimersStop(which)
 	local cdbacksize = db[which]["colorframesize"];
 	
 	for i = 1, 23 do
-		local frame = Rect.frames[which][i]["frame"];
+		local frame = Rekt.frames[which][i]["frame"];
 		frame:ClearAllPoints();
 		frame:SetFrameStrata("MEDIUM");
 		frame:SetWidth(size);
 		frame:SetHeight(size);
-		local text = Rect.frames[which][i]["texture"];
+		local text = Rekt.frames[which][i]["texture"];
 		text:SetAllPoints(frame);
 		frame.texture = text;
 		
-		local colorframe = Rect.frames[which][i]["colorframe"];
+		local colorframe = Rekt.frames[which][i]["colorframe"];
 		colorframe:ClearAllPoints();
 		colorframe:SetFrameStrata("BACKGROUND");
 		colorframe:SetBackdropColor(1, 1, 1, 1);
@@ -318,14 +318,14 @@ function Rect:MoveTimersStop(which)
 			colorframe:SetHeight(size + (2 * cdbacksize));
 			colorframe:SetPoint("BOTTOMLEFT", x - ((i - 1) * size), y - cdbacksize);
 		end
-		local CoolDown = Rect.frames[which][i]["cooldown"];
+		local CoolDown = Rekt.frames[which][i]["cooldown"];
 		CoolDown:SetAllPoints();
 		--frame:Show();
 	end
 end
 
-function Rect:VOnTimerUpdate(which)
-	if (Rect:UpdateCds(which)) then
+function Rekt:VOnTimerUpdate(which)
+	if (Rekt:UpdateCds(which)) then
 		--we have to update both, because if somebody is targeted and focused since sorting is 
 		--implemented it triggers only one update, probably it had bugs before too, but got unnoticed
 		self:ReassignCds("target");
@@ -333,7 +333,7 @@ function Rect:VOnTimerUpdate(which)
 	end
 end
 
-function Rect:UpdateCds(which)
+function Rekt:UpdateCds(which)
 	--check if we have cooldown for that unit
 	if not self.cds[self.targets[which]] then return end
 	local t = GetTime();
