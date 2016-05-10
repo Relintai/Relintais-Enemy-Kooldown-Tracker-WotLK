@@ -2,6 +2,8 @@
 -- [42292] ={120, nil,   120,     120,     120,     0,    "", "anticc", false}, --PvP Trinket
 -- spellid   cd  reset spec1cd, spec2cd, spec3cd, spec, class,  type,   ispetspell --comment
 
+--!IMPORTANT type, has to match one from the list below, nor can it be empty, you will get Lua errors from Sorters!
+
 --spellid -> the spell's id
 --cd -> base cooldown for the spell, this will be used until the spec is detected (if its on, else this will be used)
 --		NOTE: cds are in seconds, and if the tooltip shows like 2.1M then you convert it like this: 2.1 * 60 = 126

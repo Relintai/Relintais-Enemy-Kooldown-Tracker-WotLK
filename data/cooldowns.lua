@@ -40,6 +40,7 @@ function Rect:ReassignCds(which)
 		if (db[which]["colorframeenabled"]) then
 			local colorframe = Rect.frames[which][i]["colorframe"];
 			--self:Print(v["spellID"] .. " cat: " .. v["spellCategory"]);
+			
 			colorframe:SetBackdropColor(db["color"][v["spellCategory"]]["r"], 
 					db["color"][v["spellCategory"]]["g"], 
 					db["color"][v["spellCategory"]]["b"], 

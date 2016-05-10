@@ -6,6 +6,11 @@ local aceConfig = LibStub("AceConfig-3.0");
 local libSharedMedia = LibStub("LibSharedMedia-3.0");
 local libDRData = LibStub('DRData-1.0');
 
+Rect.CombatlogFixTimerData = {
+	["lasttick"] = 0,
+	["timesinceclear"] = 0
+}
+
 Rect.MovableFrames = nil
 
 Rect.targets = {
@@ -194,15 +199,16 @@ function Rect:OnInitialize()
 	aceConfig:RegisterOptionsTable("Rect", self:GetRectOptions());
 	aceCDialog:AddToBlizOptions("Rect");
 	self:RegisterChatCommand("Rect", "ChatCommand");
+
 end
 
 function Rect:OnEnable()
 	self:Reset()
-	self:RegisterEvent("PLAYER_ENTERING_WORLD")
-	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-	self:RegisterEvent("PLAYER_TARGET_CHANGED")
-	self:RegisterEvent("PLAYER_FOCUS_CHANGED")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD");
+	self:RegisterEvent("ZONE_CHANGED_NEW_AREA");
+	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+	self:RegisterEvent("PLAYER_TARGET_CHANGED");
+	self:RegisterEvent("PLAYER_FOCUS_CHANGED");
 	self:CreateFrames("target");
 	self:CreateFrames("focus");
 	self:CreateDRFrames("targetdr");
@@ -210,15 +216,41 @@ function Rect:OnEnable()
 	self:CreateDRFrames("selfdr");
 	self:ApplySettings();
 	self.targets["self"] = UnitGUID("player");
+
+	--cause, and basic fix from:
+	--from http://www.arenajunkies.com/topic/125096-combat-log-error-screwing-up-your-addons-supposed-fix/
+	local f = CreateFrame("Frame", nil, UIParent); 
+	f:SetScript("OnUpdate", function() self:CombatLogClearFix() end);
 end
 
+function Rect:CombatLogClearFix()
+	--delta is in seconds
+	local delta = GetTime() - Rect.CombatlogFixTimerData["lasttick"];
+
+	--this will happen on the first run, this is here, becouse on the first test, 
+	--the first clear on load just bugged the addon, until the second clear
+	if delta > 30 then
+		return;
+	end
+
+	local tslc = Rect.CombatlogFixTimerData["timesinceclear"] + delta;
+
+	--30 seconds should be enough
+	if tslc >= 30 then
+		CombatLogClearEntries();
+		tslc = 0;
+	end
+
+	Rect.CombatlogFixTimerData["timesinceclear"] = tslc;
+	Rect.CombatlogFixTimerData["lasttick"] = GetTime();
+end
 
 function Rect:OnDisable()
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	self:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
-	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-	self:UnregisterEvent("PLAYER_TARGET_CHANGED")
-	self:UnregisterEvent("PLAYER_FOCUS_CHANGED")
+	self:UnregisterEvent("PLAYER_ENTERING_WORLD");
+	self:UnregisterEvent("ZONE_CHANGED_NEW_AREA");
+	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+	self:UnregisterEvent("PLAYER_TARGET_CHANGED");
+	self:UnregisterEvent("PLAYER_FOCUS_CHANGED");
 	self.Reset();
 end
 
