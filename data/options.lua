@@ -163,7 +163,7 @@ function Rekt:ShowMovableFrames()
 	--Create them if they doesn't exists
 	if not Rekt.MovableFrames then
 		Rekt.MovableFrames = {}
-		for i = 1, 5 do
+		for i = 1, 6 do
 			local frame = CreateFrame("Frame", nil, UIParent, nil);
 			frame:SetFrameStrata("BACKGROUND");
 			frame:SetScript("OnDragStart", function() self:MovableFrameDragStart() end)
@@ -188,6 +188,8 @@ function Rekt:ShowMovableFrames()
 				ttext = "FDR";
 			elseif i == 5 then
 				ttext = "SDR";
+			elseif i == 6 then
+				ttext = "IB";
 			end
 			
 			t:SetText(ttext);
@@ -203,6 +205,8 @@ function Rekt:ShowMovableFrames()
 				which = "focusdr";
 			elseif i == 5 then
 				which = "selfdr";
+			elseif i == 6 then
+				which = "interruptbar";
 			end
 			
 			frame.DragID = which;
@@ -417,4 +421,14 @@ function Rekt:setSelfCDRegister(v)
 	db["selfCDRegister"] = v;
 	Rekt:ReassignCds("target");
 	Rekt:ReassignCds("focus");
+end
+
+function Rekt:getIBSelfCDRegister()
+	local db = Rekt.db.profile;
+	return db["selfIBCDRegister"];
+end
+
+function Rekt:setIBSelfCDRegister(v)
+	local db = Rekt.db.profile;
+	db["selfIBCDRegister"] = v;
 end

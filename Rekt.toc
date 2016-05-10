@@ -6,7 +6,7 @@
 ## DefaultState: Enabled
 ## OptionalDeps: Ace3
 ## SavedVariables: RektDB
-## Version: 1.05
+## Version: 1.01
 
 embeds.xml
 data\global.lua
@@ -16,4 +16,6 @@ data\options.lua
 data\sorters.lua
 data\drs.lua
 data\cooldowns.lua
+data\interruptbar.lua
+data\warn.lua
 Rekt.lua

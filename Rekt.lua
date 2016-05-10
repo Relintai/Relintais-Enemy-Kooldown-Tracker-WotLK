@@ -27,7 +27,8 @@ Rekt.frames = {
 	["focus"] = {},
 	["targetdr"] = {},
 	["focusdr"] = {},
-	["selfdr"] = {}
+	["selfdr"] = {},
+	["interruptbar"] = {}
 }
 
 Rekt.defaults = {
@@ -39,6 +40,7 @@ Rekt.defaults = {
 		spellAuraDebug = false,
 		allCDebug = false,
 		selfCDRegister = false,
+		selfIBCDRegister = false,
 		specdetection = true,
 		petcdguessing = true,
 		target = {
@@ -56,6 +58,16 @@ Rekt.defaults = {
 			size = 27,
 			xPos = 380,
 			yPos = 380,
+			growOrder = tostring(2),
+			sortOrder = tostring(5),
+			colorframeenabled = true,
+			colorframesize = 4
+		},
+		interruptbar = {
+			enabled = true,
+			size = 27,
+			xPos = 350,
+			yPos = 350,
 			growOrder = tostring(2),
 			sortOrder = tostring(5),
 			colorframeenabled = true,
@@ -214,6 +226,7 @@ function Rekt:OnEnable()
 	self:CreateDRFrames("targetdr");
 	self:CreateDRFrames("focusdr");
 	self:CreateDRFrames("selfdr");
+	self:CreateInterruptBarFrames();
 	self:ApplySettings();
 	self.targets["self"] = UnitGUID("player");
 
@@ -296,7 +309,7 @@ function Rekt:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 		end
 	  
 		if Rekt.spells[spellID] then
-			Rekt:AddCd(srcGUID, spellID);
+			Rekt:AddCd(srcGUID, spellID, srcFlags);
 		end
 	end
 
@@ -380,15 +393,21 @@ end
 
 function Rekt:ApplySettings()
 	local db = Rekt.db.profile;
+
 	Rekt:MoveTimersStop("target");
 	Rekt:MoveTimersStop("focus");
 	Rekt:ReassignCds("target");
 	Rekt:ReassignCds("focus");
+
+	Rekt:MoveTimersStop("interruptbar");
+	Rekt:ReassignIBCds();
+
 	Rekt:MoveDRTimersStop("targetdr");
 	Rekt:MoveDRTimersStop("focusdr");
 	Rekt:MoveDRTimersStop("selfdr");
 	Rekt:ReassignDRs("targetdr");
 	Rekt:ReassignDRs("focusdr");
 	Rekt:ReassignDRs("selfdr");
+
 	if not db["locked"] then self:ShowMovableFrames() end;
 end

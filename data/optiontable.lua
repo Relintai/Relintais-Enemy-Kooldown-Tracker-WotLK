@@ -42,6 +42,7 @@ function Rekt:GetRektOptions()
 	}
 	return options;
 end
+
 --order 10-20
 function Rekt:getTargetandFocusOptions()
 	local args = {
@@ -167,6 +168,68 @@ function Rekt:getTargetandFocusOptions()
 			get = function() return Rekt:getColorFrameSize("focus") end,
 			set = function(_, v)
 				Rekt:setColorFrameSize("focus", v);
+			end
+		},
+		ibHeader = {
+			type = "header", name = "InterruptBar's settings", order = 30
+		},
+		ibtoggle = {
+			type = "toggle", name = "InterruptBar", desc = "Enable/Disable showing the InterruptBar", order = 31,
+			get = function() return Rekt:isPartEnabled("interruptbar") end,
+			set = function(_, v)
+				Rekt:SetPartEnabledOrDisabled("interruptbar", v);
+			end
+		},
+		ibrange = {
+			type = "range", name = "InterruptBar's size", order = 32, min = 10, max = 150, step = 1,
+			get = function() return Rekt:getFrameSize("interruptbar") end,
+			set = function(_, v)
+				Rekt:setFrameSize("interruptbar", v);
+			end
+		},
+		ibGrowSelect = {
+			type = "select", style = "dropdown", name = "InterruptBarGrow", 
+			desc = "Change which way the InterruptBar's cooldowns will grow", order = 33, 
+			values = {
+				["1"] = "Up",
+				["2"] = "Right",
+				["3"] = "Down",
+				["4"] = "Left"
+			},
+			get = function() return Rekt:getGrowOrder("interruptbar") end,
+			set = function(_, v)
+				Rekt:setGrowOrder("interruptbar", v);
+			end
+		},
+		ibSortSelect = {
+			type = "select", style = "dropdown", name = "InterruptBarSortOrder", 
+			desc = "Change the InterruptBar's cooldowns's sort order", order = 34, 
+			values = {
+				["1"] = "Ascending (CD left)",
+				["2"] = "Descending (CD left)",
+				["3"] = "Ascending (CD total)",
+				["4"] = "Descending (CD total)",
+				["5"] = "Recent first",
+				["6"] = "Recent Last",
+				["7"] = "No order"
+			},
+			get = function() return Rekt:getSortOrder("interruptbar") end,
+			set = function(_, v)
+				Rekt:setSortOrder("interruptbar", v);
+			end
+		},
+		ibcolortoggle = {
+			type = "toggle", name = "Colors", desc = "Enable/Disable showing the InterruptBar's cooldown's colors.", order = 35,
+			get = function() return Rekt:getColorFrameEnabled("interruptbar") end,
+			set = function(_, v)
+				Rekt:setColorFrameEnabled("interruptbar", v);
+			end
+		},
+		ibcolorrange = {
+			type = "range", name = "InterruptBar's Color size", order = 36, min = 1, max = 30, step = 1,
+			get = function() return Rekt:getColorFrameSize("interruptbar") end,
+			set = function(_, v)
+				Rekt:setColorFrameSize("interruptbar", v);
 			end
 		},
 	}
@@ -637,9 +700,16 @@ function Rekt:getDebugOptions()
 				Rekt:setSelfCDRegister(v);
 			end
 		},
+		selfcd = {
+			type = "toggle", name = "Friendly + Self Interrupts", desc = "Enable/Disable registering, and showing friendly and self interrupts at the interruptbar.", order = 54,
+			get = function() return Rekt:getIBSelfCDRegister() end,
+			set = function(_, v)
+				Rekt:setIBSelfCDRegister(v);
+			end
+		},
 		debugselect = {
 			type = "select", style = "dropdown", name = "debuglevel", 
-			desc = "Change the debuglevel", order = 54, 
+			desc = "Change the debuglevel", order = 55, 
 			values = {
 				["0"] = "No Messages",
 			},

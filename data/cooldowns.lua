@@ -51,8 +51,8 @@ function Rekt:ReassignCds(which)
 	end
 end
 
-function Rekt:AddCd(srcGUID, spellID)
-	local db =  Rekt.db.profile;
+function Rekt:AddCd(srcGUID, spellID, srcFlags)
+	local db = Rekt.db.profile;
 	if not db["enabled"] then return end;
 	
 	if not Rekt.cds[srcGUID] then 
@@ -72,6 +72,7 @@ function Rekt:AddCd(srcGUID, spellID)
 	local spec = Rekt.cds[srcGUID]["spec"][1];
 	local class, isPet = Rekt.spells[spellID][7], Rekt.spells[spellID][9];
 	local cd, reset, spellCategory = Rekt.spells[spellID][spec], Rekt.spells[spellID][2], Rekt.spells[spellID][8];
+	local interrupt, warn = Rekt.spells[spellID][10], Rekt.spells[spellID][11];
 	
 	if db["petcdguessing"] then
 		if (Rekt.cds[srcGUID]["spec"][2] == "") and class then
@@ -103,6 +104,11 @@ function Rekt:AddCd(srcGUID, spellID)
 		spellID,
 		spellCategory
 	}
+
+	--Interruptbar
+	if interrupt and db["interruptbar"]["enabled"] then
+		Rekt:AddInterruptCD(Rekt.cds[srcGUID][spellID], srcFlags);
+	end
 	
 	--add it to every class of the same type
 	if db["petcdguessing"] and isPet then
