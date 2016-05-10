@@ -742,7 +742,7 @@ function Rekt:getDebugOptions()
 				Rekt:setSelfCDRegister(v);
 			end
 		},
-		selfcd = {
+		selfIBcd = {
 			type = "toggle", name = "Friendly + Self Interrupts", desc = "Enable/Disable registering, and showing friendly and self interrupts at the interruptbar.", order = 54,
 			get = function() return Rekt:getIBSelfCDRegister() end,
 			set = function(_, v)
