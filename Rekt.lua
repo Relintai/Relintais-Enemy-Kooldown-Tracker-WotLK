@@ -221,6 +221,9 @@ function Rekt:OnInitialize()
 	aceCDialog:AddToBlizOptions("Rekt");
 	self:RegisterChatCommand("Rekt", "ChatCommand");
 
+	for k, v in pairs(Rekt.modules) do
+        v["Initialise"]();
+    end
 end
 
 function Rekt:OnEnable()
@@ -230,6 +233,7 @@ function Rekt:OnEnable()
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 	self:RegisterEvent("PLAYER_TARGET_CHANGED");
 	self:RegisterEvent("PLAYER_FOCUS_CHANGED");
+	--self:RegisterEvent("CHAT_MSG_ADDON");
 	self:CreateFrames("target");
 	self:CreateFrames("focus");
 	self:CreateDRFrames("targetdr");
@@ -273,6 +277,7 @@ function Rekt:OnDisable()
 	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
 	self:UnregisterEvent("PLAYER_TARGET_CHANGED");
 	self:UnregisterEvent("PLAYER_FOCUS_CHANGED");
+	--self:UnregisterEvent("CHAT_MSG_ADDON");
 	self.Reset();
 end
 
@@ -398,6 +403,17 @@ function Rekt:ZONE_CHANGED_NEW_AREA()
 		self:Reset();
 	end
 end
+
+--[[
+function Rekt:CHAT_MSG_ADDON(prefix, message, channel, sender)
+	--self:Print(prefix .. " " .. message .. " " .. channel .. " " .. sender);
+	if message == "GladdyTrinketUsed" then
+		--Rekt:AddCd(srcGUID, spellID, eventType, srcFlags);
+		--SendAddonMessage("GladdyTrinketUsed", destGUID)
+		Rekt:AddCd(channel, 42292, "SPELL_CAST_SUCCESS", 0);
+	end	
+end
+]]--
 
 function Rekt:ApplySettings()
 	local db = Rekt.db.profile;

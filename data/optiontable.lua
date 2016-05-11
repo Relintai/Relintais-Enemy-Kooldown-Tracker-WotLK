@@ -720,6 +720,28 @@ function Rekt:getGlobalOptions()
 			end
 		},
 	}
+
+	--[[
+	--100+ (Modules)
+	local ordern = 1;
+	for k, v in pairs(self.modules) do
+        local options = v:GetOptions()
+
+		args["moduleheader" .. ordern] = {
+			type = "header", name = "Other settings", order = 100 * ordern
+		};
+
+		local orderic = 1;
+		for k1, v1 in pairs(options) do
+			args[k1] = {
+				type = v1["type"], name = v1["name"], order = (100 * ordern) + orderic
+			};
+		end
+
+        ordern = ordern + 1
+    end
+    ]]--
+
 	return args;
 end
 

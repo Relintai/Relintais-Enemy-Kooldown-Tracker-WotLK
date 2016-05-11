@@ -4,6 +4,35 @@ Rekt.appName = "Rekt"
 Rekt.dbName = "RektDB"
 Rekt.version = "1.05"
 
+Rekt.modules = {}
+
+function Rekt:NewTrinketTrackerModule(name, priority, defaults)
+    local module = CreateFrame("Frame")
+    module.name = name
+    module.priority = priority or 0
+    module.defaults = defaults or {}
+    module.messages = {}
+
+    module.RegisterMessage = function(self, message, func)
+        self.messages[message] = func or message
+    end
+
+    module.GetOptions = function()
+        return nil
+    end
+
+    if defaults then
+	    for k, v in pairs(defaults) do
+	    	self:Print(k);
+	        Rekt.defaults.profile[k] = v;
+	    end
+	end
+
+    self.modules[name] = module
+
+    return module
+end
+
 function Rekt:HideFrames()
 	for i = 1, 23 do
 		local frame = self.frames["target"][i]["frame"];
