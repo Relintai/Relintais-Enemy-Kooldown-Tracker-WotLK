@@ -136,15 +136,29 @@ end
 function Rekt:LockFrames()
 	self:MoveTimersStop("target");
 	self:MoveTimersStop("focus");
+
+	self:MoveDRTimersStop("targetdr");
+	self:MoveDRTimersStop("focusdr");
+	self:MoveDRTimersStop("selfdr");
+
 	self:HideMovableFrames()
 	self:ReassignCds("target");
 	self:ReassignCds("focus");
+
+	self:ReassignDRs("targetdr");
+	self:ReassignDRs("focusdr");
+	self:ReassignDRs("selfdr");
 end
 
 function Rekt:UnlockFrames()
 	--this will hide the frames
 	self:ReassignCds("target");
 	self:ReassignCds("focus");
+
+	self:ReassignDRs("targetdr");
+	self:ReassignDRs("focusdr");
+	self:ReassignDRs("selfdr");
+
 	Rekt:ShowMovableFrames();
 end
 

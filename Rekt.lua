@@ -322,7 +322,7 @@ function Rekt:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 	end
 
 	--DR stuff
-	if( eventType == "SPELL_AURA_APPLIED" ) then
+	if (eventType == "SPELL_AURA_APPLIED") then
 		if(detail1 == "DEBUFF" and libDRData:GetSpellCategory(spellID)) then
 			local isPlayer = (bit.band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) == COMBATLOG_OBJECT_TYPE_PLAYER or bit.band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) == COMBATLOG_OBJECT_CONTROL_PLAYER)
 			
@@ -335,20 +335,19 @@ function Rekt:COMBAT_LOG_EVENT_UNFILTERED(_, timestamp, eventType, srcGUID, srcN
 		end
 	
 	-- Enemy had a debuff refreshed before it faded, so fade + gain it quickly
-	elseif(eventType == "SPELL_AURA_REFRESH" ) then
+	elseif (eventType == "SPELL_AURA_REFRESH") then
 		if(detail1 == "DEBUFF" and libDRData:GetSpellCategory(spellID)) then
 			local isPlayer = (bit.band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) == COMBATLOG_OBJECT_TYPE_PLAYER or bit.band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) == COMBATLOG_OBJECT_CONTROL_PLAYER)
 			
 			if (not isPlayer and not libDRData:IsPVE(drCat)) then
 				return
 			end
-			
-			Rekt:DRDebuffFaded(spellID, dstGUID, isPlayer);
-			Rekt:DRDebuffGained(spellID, dstGUID, isPlayer);
+
+			Rekt:DRDebuffRefreshed(spellID, dstGUID, isPlayer);
 		end
 	
 	-- Buff or debuff faded from an enemy
-	elseif(eventType == "SPELL_AURA_REMOVED" ) then
+	elseif (eventType == "SPELL_AURA_REMOVED") then
 		if(detail1 == "DEBUFF" and libDRData:GetSpellCategory(spellID)) then
 			local isPlayer = (bit.band(dstFlags, COMBATLOG_OBJECT_TYPE_PLAYER) == COMBATLOG_OBJECT_TYPE_PLAYER or bit.band(dstFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) == COMBATLOG_OBJECT_CONTROL_PLAYER)
 			

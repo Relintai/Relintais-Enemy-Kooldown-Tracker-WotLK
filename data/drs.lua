@@ -26,6 +26,8 @@ function Rekt:DRDebuffGained(spellID, dstGUID, isPlayer)
 		local endTime = currentTime + cd;
 		local diminished = 1;
 		local isDiminishingStarted = false;
+		local lastTimeApplied = GetTime();
+
 		Rekt.drs[dstGUID][drCat] = {
 			currentTime,
 			endTime,
@@ -34,9 +36,15 @@ function Rekt:DRDebuffGained(spellID, dstGUID, isPlayer)
 			spellID,
 			diminished,
 			isDiminishingStarted,
-			drCat
+			drCat,
+			lastTimeApplied
 		}
 	else
+		--self:Print("asd");
+		if Rekt:ShouldIgnoreDRApply(Rekt.drs[dstGUID][drCat]) then
+			return;
+		end
+
 		local cd = 18;
 		local currentTime = GetTime();
 		local endTime = currentTime + cd;
@@ -46,6 +54,7 @@ function Rekt:DRDebuffGained(spellID, dstGUID, isPlayer)
 		Rekt.drs[dstGUID][drCat][5] = spellID;
 		Rekt.drs[dstGUID][drCat][6] = Rekt.drs[dstGUID][drCat][6] + 1;
 		Rekt.drs[dstGUID][drCat][7] = false;
+		Rekt.drs[dstGUID][drCat][9] = GetTime();
 		
 		--reset it back to 1, x > 3 means, the server updated the dr in less than 18 sec.
 		if Rekt.drs[dstGUID][drCat][6] > 3 then
@@ -73,7 +82,7 @@ function Rekt:DRDebuffFaded(spellID, dstGUID, isPlayer)
 	if not db["enabled"] then return end;
 
 	if not Rekt.drs[dstGUID] then 
-		 Rekt.drs[dstGUID] = {}
+		 Rekt:DRDebuffGained(spellID, dstGUID, isPlayer);
 	end
 
 	local drCat = libDRData:GetSpellCategory(spellID);
@@ -83,21 +92,7 @@ function Rekt:DRDebuffFaded(spellID, dstGUID, isPlayer)
 	
 	if not Rekt.drs[dstGUID][drCat] then
 		--means we didn't see it applied
-		local cd = 18;
-		local currentTime = GetTime();
-		local endTime = currentTime + cd;
-		local diminished = 1;
-		local isDiminishingStarted = true;
-		Rekt.drs[dstGUID][drCat] = {
-			currentTime,
-			endTime,
-			cd,
-			spellIcon,
-			spellID,
-			diminished,
-			isDiminishingStarted,
-			drCat
-		}
+		Rekt:DRDebuffGained(spellID, dstGUID, isPlayer);
 	else
 		local cd = 18;
 		local currentTime = GetTime();
@@ -105,6 +100,7 @@ function Rekt:DRDebuffFaded(spellID, dstGUID, isPlayer)
 		Rekt.drs[dstGUID][drCat][1] = currentTime;
 		Rekt.drs[dstGUID][drCat][2] = endTime;
 		Rekt.drs[dstGUID][drCat][7] = true;
+		--Rekt.drs[dstGUID][drCat][9] = GetTime();
 	end
 
 	--self:Print(Rekt.cds[srcGUID][spellID][1] .. " " .. Rekt.cds[srcGUID][spellID][2] .. " " .. Rekt.cds[srcGUID][spellID][3]);
@@ -122,17 +118,95 @@ function Rekt:DRDebuffFaded(spellID, dstGUID, isPlayer)
 	end
 end
 
+function Rekt:DRDebuffRefreshed(spellID, dstGUID, isPlayer)
+	local db =  Rekt.db.profile;
+	if not db["enabled"] then return end;
+	
+	if not Rekt.drs[dstGUID] then 
+		 Rekt:DRDebuffGained(spellID, dstGUID, isPlayer);
+		 return;
+	end
+
+	local drCat = libDRData:GetSpellCategory(spellID);
+	local spellName, spellRank, spellIcon = GetSpellInfo(spellID);
+
+	Rekt:UpdateDRs(dstGUID);
+	
+	if not Rekt.drs[dstGUID][drCat] then
+		--means we didn't see it applied
+		Rekt:DRDebuffGained(spellID, dstGUID, isPlayer);
+		return;
+	else
+		local cd = 18;
+		local currentTime = GetTime();
+		local endTime = currentTime + cd;
+		Rekt.drs[dstGUID][drCat][1] = currentTime;
+		Rekt.drs[dstGUID][drCat][2] = currentTime + cd;
+		Rekt.drs[dstGUID][drCat][4] = spellIcon;
+		Rekt.drs[dstGUID][drCat][5] = spellID;
+		Rekt.drs[dstGUID][drCat][6] = Rekt.drs[dstGUID][drCat][6] + 1;
+		Rekt.drs[dstGUID][drCat][7] = false;
+		Rekt.drs[dstGUID][drCat][9] = GetTime();
+		
+		--reset it back to 1, x > 3 means, the server updated the dr in less than 18 sec.
+		if Rekt.drs[dstGUID][drCat][6] > 3 then
+			Rekt.drs[dstGUID][drCat][6] = 1;
+		end
+	end
+
+	--self:Print(Rekt.cds[srcGUID][spellID][1] .. " " .. Rekt.cds[srcGUID][spellID][2] .. " " .. Rekt.cds[srcGUID][spellID][3]);
+	
+	if self.targets["target"] == dstGUID then
+		self:ReassignDRs("targetdr");
+	end
+	
+	if self.targets["focus"] == dstGUID then
+		self:ReassignDRs("focusdr");
+	end
+	
+	if self.targets["self"] == dstGUID then
+		self:ReassignDRs("selfdr");
+	end
+end
+
+-- Is the DR registered?
+function Rekt:IsDRRegistered(spellID, dstGUID, isPlayer)
+	if not Rekt.drs[dstGUID][drCat] then
+		return false;
+	else
+		return true;
+	end
+end
+
+-- This function is needed, because TBC servers fire SPELL_AURA_REFRESH, then SPELL_AURA_APPLIED, even if this is the first
+-- time the buff is applied.
+function Rekt:ShouldIgnoreDRApply(drData)
+	local delta = GetTime() - drData[9];
+	--self:Print(delta .. "    " .. GetTime() .. "  " .. drData[9]);
+
+	--This Might still have false positives, but I guess this is the right tradeoff
+	--it's still better that to just ignore refreshed alltogether if the player didn't see the first apply
+	if (delta < 0.1) then
+		return true;
+	end
+
+	return false;
+end
+
 function Rekt:ReassignDRs(which)
 	local db =  Rekt.db.profile;
 	--bail out early, if frames are disabled
 	if not db[which]["enabled"] or not db["enabled"] then return end;
+
 	--first hide all
 	for i = 1, 18 do
 		local frame = Rekt.frames[which][i]["frame"];
 		frame:Hide();
 	end
+
 	--check if frames are unlocked
 	if not db["locked"] then return end;
+
 	--check if we have cooldown for that unit
 	local whichs = "";
 	if which == "targetdr" then
@@ -144,14 +218,17 @@ function Rekt:ReassignDRs(which)
 	end
 
 	if not self.drs[self.targets[whichs]] then return end;
+
 	--update then
 	Rekt:UpdateDRs(self.targets[whichs]);
+
 	--sort them
 	local tmp = Rekt:SortDRs(whichs);
+
 	--let's fill them up
 	local i = 1;
 	for k, v in ipairs(tmp) do
-		--self:Print(v["spellID"]);
+		--self:Print(v["diminished"]);
 		local frame = Rekt.frames[which][i]["frame"];
 		local text = Rekt.frames[which][i]["texture"];
 		text:SetTexture(v["spellIcon"]);
@@ -171,6 +248,7 @@ function Rekt:ReassignDRs(which)
 		frame:Show();
 		i = i + 1;
 	end
+	--self:Print("--------");
 end
 
 function Rekt:SortDRs(which)
@@ -187,7 +265,8 @@ function Rekt:SortDRs(which)
 			spellIcon = v[4],
 			spellID = v[5],
 			diminished = v[6],
-			isDiminishingStarted = v[7]
+			isDiminishingStarted = v[7],
+			lastTimeApplied = v[8]
 			};
 			
 		--self:Print(v[1] .. v[2] .. v[3] .. v[4] .. v[5])
@@ -213,6 +292,7 @@ function Rekt:SortDRs(which)
 		table.sort(tmp, function(a, b) return Rekt:ComparerRecentLast(a, b) end);
 	end
 	--["7"] = "No order"
+
 	return tmp;
 end
 
