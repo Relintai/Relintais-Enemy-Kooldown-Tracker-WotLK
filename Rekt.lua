@@ -43,6 +43,7 @@ Rekt.defaults = {
 		selfIBCDRegister = false,
 		specdetection = true,
 		petcdguessing = true,
+		drtime = 15,
 		target = {
 			enabled = true,
 			size = 27,

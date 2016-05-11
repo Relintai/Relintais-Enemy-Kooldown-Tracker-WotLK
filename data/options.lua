@@ -446,3 +446,13 @@ function Rekt:setIBSelfCDRegister(v)
 	local db = Rekt.db.profile;
 	db["selfIBCDRegister"] = v;
 end
+
+function Rekt:getDRTime()
+	local db = Rekt.db.profile;
+	return db["drtime"];
+end
+
+function Rekt:setDRTime(v)
+	local db = Rekt.db.profile;
+	db["drtime"] = v;
+end

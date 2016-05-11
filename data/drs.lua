@@ -21,7 +21,7 @@ function Rekt:DRDebuffGained(spellID, dstGUID, isPlayer)
 	Rekt:UpdateDRs(dstGUID);
 	
 	if not Rekt.drs[dstGUID][drCat] then
-		local cd = 18;
+		local cd = Rekt:getDRTime();
 		local currentTime = GetTime();
 		local endTime = currentTime + cd;
 		local diminished = 1;
@@ -45,7 +45,7 @@ function Rekt:DRDebuffGained(spellID, dstGUID, isPlayer)
 			return;
 		end
 
-		local cd = 18;
+		local cd = Rekt:getDRTime();
 		local currentTime = GetTime();
 		local endTime = currentTime + cd;
 		Rekt.drs[dstGUID][drCat][1] = currentTime;
@@ -56,7 +56,7 @@ function Rekt:DRDebuffGained(spellID, dstGUID, isPlayer)
 		Rekt.drs[dstGUID][drCat][7] = false;
 		Rekt.drs[dstGUID][drCat][9] = GetTime();
 		
-		--reset it back to 1, x > 3 means, the server updated the dr in less than 18 sec.
+		--reset it back to 1, x > 3 means, the server updated the dr in less than Rekt:getDRTime() sec.
 		if Rekt.drs[dstGUID][drCat][6] > 3 then
 			Rekt.drs[dstGUID][drCat][6] = 1;
 		end
@@ -94,7 +94,7 @@ function Rekt:DRDebuffFaded(spellID, dstGUID, isPlayer)
 		--means we didn't see it applied
 		Rekt:DRDebuffGained(spellID, dstGUID, isPlayer);
 	else
-		local cd = 18;
+		local cd = Rekt:getDRTime();
 		local currentTime = GetTime();
 		local endTime = currentTime + cd;
 		Rekt.drs[dstGUID][drCat][1] = currentTime;
@@ -137,7 +137,7 @@ function Rekt:DRDebuffRefreshed(spellID, dstGUID, isPlayer)
 		Rekt:DRDebuffGained(spellID, dstGUID, isPlayer);
 		return;
 	else
-		local cd = 18;
+		local cd = Rekt:getDRTime();
 		local currentTime = GetTime();
 		local endTime = currentTime + cd;
 		Rekt.drs[dstGUID][drCat][1] = currentTime;
@@ -148,7 +148,7 @@ function Rekt:DRDebuffRefreshed(spellID, dstGUID, isPlayer)
 		Rekt.drs[dstGUID][drCat][7] = false;
 		Rekt.drs[dstGUID][drCat][9] = GetTime();
 		
-		--reset it back to 1, x > 3 means, the server updated the dr in less than 18 sec.
+		--reset it back to 1, x > 3 means, the server updated the dr in less than Rekt:getDRTime() sec.
 		if Rekt.drs[dstGUID][drCat][6] > 3 then
 			Rekt.drs[dstGUID][drCat][6] = 1;
 		end

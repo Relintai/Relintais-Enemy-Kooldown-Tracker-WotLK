@@ -273,7 +273,7 @@ function Rekt:getTargetandFocusOptions()
 				Rekt:setDRNumPosition("targetdr", v);
 			end
 		},
-		]]--
+	]]--
 	}
 	return args;
 end
@@ -705,6 +705,18 @@ function Rekt:getGlobalOptions()
 			get = function() return Rekt:getColor("uncategorized") end,
 			set = function(_, r, g, b, a)
 				Rekt:setColor("uncategorized", r, g, b, a);
+			end
+		},
+
+		--70+
+		globalotherHeader = {
+			type = "header", name = "Other settings", order = 70
+		},
+		drtimerange = {
+			type = "range", name = "Diminishing Return time", order = 71, min = 1, max = 25, step = 1,
+			get = function() return Rekt:getDRTime() end,
+			set = function(_, v)
+				Rekt:setDRTime(v);
 			end
 		},
 	}
