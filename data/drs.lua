@@ -327,6 +327,7 @@ function Rekt:CreateDRFrames(which)
 		t:SetPoint("CENTER", frame, "CENTER", 0, 0);
 		t:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE, MONOCHROME")
 		--frame:Hide();
+		
 		Rekt.frames[which][i] = {}
 		Rekt.frames[which][i]["frame"] = frame;
 		Rekt.frames[which][i]["texture"] = text;
@@ -410,13 +411,15 @@ function Rekt:UpdateDRs(unitGUID)
 	if not self.drs[unitGUID] then return end
 	local t = GetTime();
 	local found = false;
+
 	--let's check if one of the cooldowns finished
 	for k, v in pairs(self.drs[unitGUID]) do
-		if (v[7] == true and v[2] <= t) or (v[2] + 25 <= t) then
+		if (v[7] == true and v[2] <= t) or (v[2] + 10 + Rekt:getDRTime() <= t) then
 			self.drs[unitGUID][v[8]] = nil;
 			found = true;
 		end
 	end
+
 	return found;
 end
 
