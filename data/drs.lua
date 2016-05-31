@@ -327,7 +327,7 @@ function Rekt:CreateDRFrames(which)
 		t:SetPoint("CENTER", frame, "CENTER", 0, 0);
 		t:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE, MONOCHROME")
 		--frame:Hide();
-		
+
 		Rekt.frames[which][i] = {}
 		Rekt.frames[which][i]["frame"] = frame;
 		Rekt.frames[which][i]["texture"] = text;
@@ -429,5 +429,23 @@ function Rekt:HideSelfDRFrames()
 	for i = 1, 18 do
 		local frame = Rekt.frames["selfdr"][i]["frame"];
 		frame:Hide();
+	end
+end
+
+-- Debug Stuff: 
+
+function Rekt:printAllDRsForGUID(guid)
+	local drs = Rekt.drs[dstGUID];
+
+	for k, v in pairs(drs) do
+		self:Print(k .. " " .. v);
+
+		for ki, kvi in pairs(v) do
+			self:Print("  " .. ki .. " " .. kvi);
+
+			for kj, kvj in pairs(kv) do
+				self:Print("      " .. kj .. " " .. kvj);
+			end
+		end
 	end
 end

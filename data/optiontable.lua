@@ -794,6 +794,11 @@ function Rekt:getDebugOptions()
 				Rekt:setDebugLevel(v);
 			end
 		},
+		debuglistselfdrs = {
+			type = "execute", name = "List SelfDRs", 
+			desc = "List SelfDRs", order = 56,
+			func = function() return Rekt:printAllDRsForGUID(Rekt.targets["self"]); end,
+		},
 	}
 	return args;
 end
