@@ -2,11 +2,11 @@
 ## Author: Relintai
 ## Name: Rekt
 ## Title: Rekt
-## Notes: Relintai's Enemy "Kooldown" Tracker V1.1
+## Notes: Relintai's Enemy "Kooldown" Tracker V1.11
 ## DefaultState: Enabled
 ## OptionalDeps: Ace3
 ## SavedVariables: RektDB
-## Version: 1.1
+## Version: 1.11
 
 embeds.xml
 data\global.lua

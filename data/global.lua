@@ -2,7 +2,7 @@
 Rekt = LibStub("AceAddon-3.0"):NewAddon("Rekt", "AceConsole-3.0", "AceEvent-3.0")
 Rekt.appName = "Rekt"
 Rekt.dbName = "RektDB"
-Rekt.version = "1.06"
+Rekt.version = "1.11"
 
 Rekt.modules = {}
 
