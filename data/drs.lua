@@ -228,28 +228,42 @@ function Rekt:ReassignDRs(which)
 	--let's fill them up
 	local i = 1;
 	for k, v in ipairs(tmp) do
-		--self:Print(v["diminished"]);
-		local frame = Rekt.frames[which][i]["frame"];
-		local text = Rekt.frames[which][i]["texture"];
-		text:SetTexture(v["spellIcon"]);
-		local CoolDown = Rekt.frames[which][i]["cooldown"];
-		local t = Rekt.frames[which][i]["text"];
-		if v["isDiminishingStarted"] then
-			CoolDown:SetCooldown(v["currentTime"], v["cd"]);
+		if db[which]["onlyShowDRCountDown"] then
+			if v["isDiminishingStarted"] then
+				Rekt:SetupDRIcon(which, i, v, v["cd"])
+				i = i + 1;
+			end
 		else
-			CoolDown:SetCooldown(v["currentTime"], 0);
+			if v["isDiminishingStarted"] then
+				Rekt:SetupDRIcon(which, i, v, v["cd"])
+			else
+				Rekt:SetupDRIcon(which, i, v, 0)
+			end
+
+			i = i + 1;
 		end
-		
-		--print it out, if we need to
-		if db[which]["drnumsize"] > 0 then
-			t:SetText(v["diminished"]);
-		end
-		
-		frame:Show();
-		i = i + 1;
 	end
-	--self:Print("--------");
 end
+
+function Rekt:SetupDRIcon(which, i, data, time)
+	local db =  Rekt.db.profile;
+
+	local frame = Rekt.frames[which][i]["frame"];
+	local text = Rekt.frames[which][i]["texture"];
+	text:SetTexture(data["spellIcon"]);
+	local CoolDown = Rekt.frames[which][i]["cooldown"];
+	local t = Rekt.frames[which][i]["text"];
+
+	CoolDown:SetCooldown(data["currentTime"], time);
+
+	--print it out, if we need to
+	if db[which]["drnumsize"] > 0 then
+		t:SetText(data["diminished"]);
+	end
+		
+	frame:Show();
+end
+
 
 function Rekt:SortDRs(which)
 	local db = Rekt.db.profile;

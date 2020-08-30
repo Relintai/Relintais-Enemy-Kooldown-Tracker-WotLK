@@ -90,7 +90,8 @@ Rekt.defaults = {
 			growOrder = tostring(2),
 			sortOrder = tostring(5),
 			drnumsize = 14,
-			drnumposition = tostring(1)
+			drnumposition = tostring(1),
+			onlyShowDRCountDown = false,
 		},
 		focusdr = {
 			enabled = true,
@@ -100,7 +101,8 @@ Rekt.defaults = {
 			growOrder = tostring(2),
 			sortOrder = tostring(5),
 			drnumsize = 14,
-			drnumposition = tostring(1)
+			drnumposition = tostring(1),
+			onlyShowDRCountDown = false,
 		},
 		selfdr = {
 			enabled = true,
@@ -110,7 +112,8 @@ Rekt.defaults = {
 			growOrder = tostring(2),
 			sortOrder = tostring(5),
 			drnumsize = 14,
-			drnumposition = tostring(1)
+			drnumposition = tostring(1),
+			onlyShowDRCountDown = false,
 		},
 		color = {
 			gapcloser = {

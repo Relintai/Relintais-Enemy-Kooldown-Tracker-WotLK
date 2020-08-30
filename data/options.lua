@@ -456,3 +456,13 @@ function Rekt:setDRTime(v)
 	local db = Rekt.db.profile;
 	db["drtime"] = v;
 end
+
+function Rekt:isOnlyShowDRCountDown(which)
+	local db = Rekt.db.profile;
+	return db[which]["onlyShowDRCountDown"];
+end
+
+function Rekt:setOnlyShowDRCountDown(which, enable)
+	local db = Rekt.db.profile;
+	db[which]["onlyShowDRCountDown"] = enable;
+end

@@ -354,18 +354,25 @@ function Rekt:getDROptions()
 				Rekt:setDRNumPosition("targetdr", v);
 			end
 		},
+		targetdrOnlyShowDRCountDownToggle = {
+			type = "toggle", name = "Only Show DR CountDown", desc = "If enabled the DR icon will only show up when the DR countdown actually starts.", order = 17,
+			get = function() return Rekt:isOnlyShowDRCountDown("targetdr") end,
+			set = function(_, v)
+				Rekt:setOnlyShowDRCountDown("targetdr", v);
+			end
+		},
 		focusdrHeader = {
-			type = "header", name = "Focus's settings", order = 17
+			type = "header", name = "Focus's settings", order = 18
 		},
 		focusdrtoggle = {
-				type = "toggle", name = "Enabled", desc = "Enable/Disable showing the focus's DRs.", order = 18,
+				type = "toggle", name = "Enabled", desc = "Enable/Disable showing the focus's DRs.", order = 19,
 				get = function() return Rekt:isPartEnabled("focusdr") end,
 				set = function(_, v)
 					Rekt:SetDRPartEnabledOrDisabled("focusdr", v);
 				end
 		},
 		focusdrRange = {
-				type = "range", name = "Focus's size", order = 19, min = 10, max = 150, step = 1,
+				type = "range", name = "Focus's size", order = 20, min = 10, max = 150, step = 1,
 				get = function() return Rekt:getFrameSize("focusdr") end,
 				set = function(_, v)
 					Rekt:setFrameSize("focusdr", v);
@@ -373,7 +380,7 @@ function Rekt:getDROptions()
 		},
 		focusdrGrowSelect = {
 			type = "select", style = "dropdown", name = "focusDRGrow", 
-			desc = "Change which way the focus's DRs will grow", order = 20, 
+			desc = "Change which way the focus's DRs will grow", order = 21, 
 			values = {
 				["1"] = "Up",
 				["2"] = "Right",
@@ -387,7 +394,7 @@ function Rekt:getDROptions()
 		},
 		focusdrSortSelect = {
 			type = "select", style = "dropdown", name = "focusDRSortOrder", 
-			desc = "Change the focus's DR's sort order", order = 21, 
+			desc = "Change the focus's DR's sort order", order = 22, 
 			values = {
 				["1"] = "Ascending (CD left)",
 				["2"] = "Descending (CD left)",
@@ -404,7 +411,7 @@ function Rekt:getDROptions()
 		},
 		focusdrnumsizerange = {
 			type = "range", name = "Number's size", desc = "Focus's DR's Number's size. Set it to 0 to disable it!",
-			order = 22, min = 1, max = 30, step = 1,
+			order = 23, min = 1, max = 30, step = 1,
 			get = function() return Rekt:getDRNumSize("focusdr") end,
 			set = function(_, v)
 				Rekt:setDRNumSize("focusdr", v);
@@ -413,7 +420,7 @@ function Rekt:getDROptions()
 		},
 		focusdrnumposselect = {
 			type = "select", style = "dropdown", name = "focusDRNumPos", 
-			desc = "Change the focus's DR's number's position.", order = 23, 
+			desc = "Change the focus's DR's number's position.", order = 24, 
 			values = {
 				["1"] = "Up",
 				["2"] = "Right",
@@ -426,18 +433,25 @@ function Rekt:getDROptions()
 				Rekt:setDRNumPosition("focusdr", v);
 			end
 		},
+		focusdrOnlyShowDRCountDownToggle = {
+			type = "toggle", name = "Only Show DR CountDown", desc = "If enabled the DR icon will only show up when the DR countdown actually starts.", order = 25,
+			get = function() return Rekt:isOnlyShowDRCountDown("focusdr") end,
+			set = function(_, v)
+				Rekt:setOnlyShowDRCountDown("focusdr", v);
+			end
+		},
 		selfdrHeader = {
-			type = "header", name = "Self's settings", order = 24
+			type = "header", name = "Self's settings", order = 26
 		},
 		selfdrtoggle = {
-			type = "toggle", name = "Enabled", desc = "Enable/Disable showing the your DRs.", order = 25,
+			type = "toggle", name = "Enabled", desc = "Enable/Disable showing the your DRs.", order = 27,
 			get = function() return Rekt:isPartEnabled("selfdr") end,
 			set = function(_, v)
 				Rekt:SetDRPartEnabledOrDisabled("selfdr", v);
 			end
 		},
 		selfdrrange = {
-			type = "range", name = "Self's DRs size", order = 26, min = 10, max = 150, step = 1,
+			type = "range", name = "Self's DRs size", order = 28, min = 10, max = 150, step = 1,
 			get = function() return Rekt:getFrameSize("selfdr") end,
 			set = function(_, v)
 				Rekt:setFrameSize("selfdr", v);
@@ -445,7 +459,7 @@ function Rekt:getDROptions()
 		},
 		selfdrGrowSelect = {
 			type = "select", style = "dropdown", name = "selfDRGrow", 
-			desc = "Change which way the your DRs will grow", order = 27, 
+			desc = "Change which way the your DRs will grow", order = 29, 
 			values = {
 				["1"] = "Up",
 				["2"] = "Right",
@@ -459,7 +473,7 @@ function Rekt:getDROptions()
 		},
 		selfdrSortSelect = {
 			type = "select", style = "dropdown", name = "selfDRSortOrder", 
-			desc = "Change the your DR's sort order", order = 28, 
+			desc = "Change the your DR's sort order", order = 30, 
 			values = {
 				["1"] = "Ascending (CD left)",
 				["2"] = "Descending (CD left)",
@@ -476,7 +490,7 @@ function Rekt:getDROptions()
 		},
 		selfdrnumsizerange = {
 			type = "range", name = "Number's size", desc = "Your DR's Number's size. Set it to 0 to disable it!",
-			order = 29, min = 1, max = 30, step = 1,
+			order = 31, min = 1, max = 30, step = 1,
 			get = function() return Rekt:getDRNumSize("selfdr") end,
 			set = function(_, v)
 				Rekt:setDRNumSize("selfdr", v);
@@ -485,7 +499,7 @@ function Rekt:getDROptions()
 		},
 		selfdrnumposselect = {
 			type = "select", style = "dropdown", name = "selfDRNumPos", 
-			desc = "Change your DR's number's position.", order = 30, 
+			desc = "Change your DR's number's position.", order = 32, 
 			values = {
 				["1"] = "Up",
 				["2"] = "Right",
@@ -496,6 +510,13 @@ function Rekt:getDROptions()
 			get = function() return Rekt:getDRNumPosition("selfdr") end,
 			set = function(_, v)
 				Rekt:setDRNumPosition("selfdr", v);
+			end
+		},
+		selfdrOnlyShowDRCountDownToggle = {
+			type = "toggle", name = "Only Show DR CountDown", desc = "If enabled the DR icon will only show up when the DR countdown actually starts.", order = 33,
+			get = function() return Rekt:isOnlyShowDRCountDown("selfdr") end,
+			set = function(_, v)
+				Rekt:setOnlyShowDRCountDown("selfdr", v);
 			end
 		},
 	}
