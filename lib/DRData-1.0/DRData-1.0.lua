@@ -164,7 +164,6 @@ Data.spells = {
 	[18469] = "silence",
 	
 	-- Spell Lock
-	[19244] = "silence",
 	[19647] = "silence",
 	
 	-- Shield of the Templar
