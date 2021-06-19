@@ -564,7 +564,8 @@ Rekt.spells = {
 	--Detection
 	[17962] = {0, nil, 0, 0, 0, 5, "Warlock", "", false, false, false}, --Conflagrate
 	--Pets
-	[19647] = {24, nil, 0, 0, 0, 0, "Warlock", "silence", true, true, false}, --Spell Lock
+	[19244] = {24, nil, 0, 0, 0, 0, "Warlock", "silence", true, true, false}, --Spell Lock r1
+	[19647] = {24, nil, 0, 0, 0, 0, "Warlock", "silence", true, true, false}, --Spell Lock r2
 	[47986] = {60, nil, 0, 0, 0, 0, "Warlock", "defensive", true, false, false}, --Sacrifice
 	
 	--Druid
