@@ -295,6 +295,8 @@ Data.spells = {
 	[30283] = "ctrlstun", 
 	[30413] = "ctrlstun",
 	[30414] = "ctrlstun",
+	[47846] = "ctrlstun",
+	[47847] = "ctrlstun",
 	
 	-- Holy Wrath
 	[2812] = "ctrlstun",
