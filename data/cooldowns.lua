@@ -252,7 +252,7 @@ function Rekt:CreateFrames(which)
 		frame.texture = text;
 		local CoolDown = CreateFrame("Cooldown", "RektCoolDown" .. i, frame);
 		CoolDown:SetAllPoints()
-		CoolDown:SetCooldown(GetTime(), 50);
+		--CoolDown:SetCooldown(GetTime(), 50);
 		frame:Hide();
 		
 		local colorframe = CreateFrame("Frame", nil, UIParent, nil);
