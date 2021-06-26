@@ -335,7 +335,7 @@ function Rekt:CreateDRFrames(which)
 		frame.texture = text;
 		local CoolDown = CreateFrame("Cooldown", "RektCoolDown" .. i, frame);
 		CoolDown:SetAllPoints()
-		CoolDown:SetCooldown(GetTime(), 50);
+		--CoolDown:SetCooldown(GetTime(), 50);
 		local t = frame:CreateFontString(nil, "OVERLAY");
 		t:SetNonSpaceWrap(false);
 		t:SetPoint("CENTER", frame, "CENTER", 0, 0);
