@@ -38,7 +38,7 @@ function Rekt:CreateInterruptBarFrames()
 			frame:SetScript("OnUpdate", function() self:OnInterruptBarUpdate() end)
 		end
 		local text = frame:CreateTexture();
-		text:SetTexture("Interface\\Icons\\Spell_Arcane_Blink")
+		--text:SetTexture("Interface\\Icons\\Spell_Arcane_Blink")
 		text:SetAllPoints(frame);
 		frame.texture = text;
 		local CoolDown = CreateFrame("Cooldown", "RektIBCoolDown" .. i, frame);

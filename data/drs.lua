@@ -330,7 +330,7 @@ function Rekt:CreateDRFrames(which)
 			frame:SetScript("OnUpdate", function() self:VOnDRTimerUpdate(wh) end)
 		end
 		local text = frame:CreateTexture();
-		text:SetTexture("Interface\\Icons\\Spell_Arcane_Blink")
+		--text:SetTexture("Interface\\Icons\\Spell_Arcane_Blink")
 		text:SetAllPoints(frame);
 		frame.texture = text;
 		local CoolDown = CreateFrame("Cooldown", "RektCoolDown" .. i, frame);
