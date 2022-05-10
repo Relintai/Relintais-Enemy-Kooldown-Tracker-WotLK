@@ -187,18 +187,22 @@ function Rekt:SortCDs(which)
 	local i = 1;
 	for k, v in pairs(self.cds[self.targets[which]]) do
 		if not (k == "spec") then
-			tmp[i] = {
+			local ttmp = {
 				currentTime = v[1],
 				endTime = v[2],
 				cd = v[3],
 				spellIcon = v[4],
 				spellID = v[5],
 				spellCategory = v[6]
-				};
-				
-			--self:Print(v[1] .. v[2] .. v[3] .. v[4] .. v[5])
-			--self:Print(tmp[i]["currentTime"] .. " " .. tmp[i]["endTime"] .. " " .. tmp[i]["cd"]);-- .. " " .. tmp[i][4] .. " " .. tmp[i][5])
-			i = i + 1;
+			};
+
+    			if ttmp then 
+        			tmp[i] = ttmp;
+            
+        			--self:Print(v[1] .. v[2] .. v[3] .. v[4] .. v[5])
+        			--self:Print(tmp[i]["currentTime"] .. " " .. tmp[i]["endTime"] .. " " .. tmp[i]["cd"]);-- .. " " .. tmp[i][4] .. " " .. tmp[i][5])
+        			i = i + 1;
+			end
 		end
 	end
 
